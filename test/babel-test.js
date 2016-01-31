@@ -28,7 +28,7 @@
 /* global describe, it, before, after */
 
 
-var babel = require( '../lib/babel.js' ) ;
+var Babel = require( '../lib/Babel.js' ) ;
 var expect = require( 'expect.js' ) ;
 
 
