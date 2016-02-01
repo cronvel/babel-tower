@@ -118,26 +118,28 @@ describe( "Language pack and functions" , function() {
 			none: {
 				fn: {
 					nw: function( arg ) {
-						return n2w.toWords( arg.n ) ;
+						return Babel.Word.create( arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
 					}
 				}
 			} ,
 			fr: {
+				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 				fn: {
 					nw: function( arg ) {
 						
 						switch ( arg.n )
 						{
-							case 0: return 'zero' ;
-							case 1: return arg.g === 'f' ? 'une' : 'un' ;
-							case 2: return 'deux' ;
-							case 3: return 'trois' ;
+							case 0: return Babel.Word.create( arg , [ 's' , 'zero' ] ) ;
+							case 1: return Babel.Word.create( arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
+							case 2: return Babel.Word.create( arg , [ 's' , 'deux' ] ) ;
+							case 3: return Babel.Word.create( arg , [ 's' , 'trois' ] ) ;
 							default: return '' + arg.n ;
 						}
 					}
 				} ,
 				sentence: {
-					"Give me $1[nw] apple$1[n?|s]!" : "Donne-moi $1[nw] pomme$1[n?|s]!"
+					"Give me $1[nw] apple$1[n?|s]!" : "Donne-moi $1[nw/g:f] pomme$1[n?|s]!" ,
+					"There $1[n?is|are] $1[nw] horse$1[n?|s]!" : "Il y a $1[nw] chev$1[n?al|aux]!"
 				}
 			}
 		} ) ;
@@ -147,12 +149,21 @@ describe( "Language pack and functions" , function() {
 		expect( babel.solve( "Give me $1[nw] apple$1[n?|s]!" , 2 ) ).to.be( "Give me two apples!" ) ;
 		expect( babel.solve( "Give me $1[nw] apple$1[n?|s]!" , 3 ) ).to.be( "Give me three apples!" ) ;
 		
+		expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 0 ) ).to.be( "There is zero horse!" ) ;
+		expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 1 ) ).to.be( "There is one horse!" ) ;
+		expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 2 ) ).to.be( "There are two horses!" ) ;
+		
 		var babelFr = babel.use( 'fr' ) ;
 		
 		expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 0 ) ).to.be( "Donne-moi zero pomme!" ) ;
-		expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 1 ) ).to.be( "Donne-moi un pomme!" ) ;
+		expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 1 ) ).to.be( "Donne-moi une pomme!" ) ;
 		expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 2 ) ).to.be( "Donne-moi deux pommes!" ) ;
 		expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi trois pommes!" ) ;
+		
+		expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 0 ) ).to.be( "Il y a zero cheval!" ) ;
+		expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 1 ) ).to.be( "Il y a un cheval!" ) ;
+		expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 2 ) ).to.be( "Il y a deux chevaux!" ) ;
+		
 	} ) ;
 } ) ;
 
