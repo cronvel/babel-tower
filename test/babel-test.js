@@ -39,10 +39,14 @@ var expect = require( 'expect.js' ) ;
 
 
 
-describe( "..." , function() {
+describe( "Basic usage without language pack" , function() {
 	
-	it( "..." , function() {
-		
+	it( "should replace" , function() {
+		babel = Babel.create() ;
+		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
+		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
+		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 2 ) ).to.be( "Give me 2 apples!" ) ;
+		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 } ) ;
 	
