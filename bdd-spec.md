@@ -30,7 +30,7 @@ expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Give me 3 apple
 
 <a name="basic-usage-with-language-pack"></a>
 # Basic usage with language pack
-should replace.
+should format and localize.
 
 ```js
 var babel = Babel.create() ;
@@ -73,7 +73,7 @@ expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 p
 
 <a name="language-pack-and-functions"></a>
 # Language pack and functions
-should replace.
+should format and localize, using language functions.
 
 ```js
 var babel = Babel.create() ;
@@ -85,7 +85,7 @@ babel.extend( {
 	none: {
 		fn: {
 			nw: function( arg ) {
-				return Babel.Word.create( arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
+				return Babel.Word.create( babel , arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
 			}
 		}
 	} ,
@@ -96,10 +96,10 @@ babel.extend( {
 				
 				switch ( arg.n )
 				{
-					case 0: return Babel.Word.create( arg , [ 's' , 'zero' ] ) ;
-					case 1: return Babel.Word.create( arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
-					case 2: return Babel.Word.create( arg , [ 's' , 'deux' ] ) ;
-					case 3: return Babel.Word.create( arg , [ 's' , 'trois' ] ) ;
+					case 0: return Babel.Word.create( babel , arg , [ 's' , 'zero' ] ) ;
+					case 1: return Babel.Word.create( babel , arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
+					case 2: return Babel.Word.create( babel , arg , [ 's' , 'deux' ] ) ;
+					case 3: return Babel.Word.create( babel , arg , [ 's' , 'trois' ] ) ;
 					default: return '' + arg.n ;
 				}
 			}
@@ -130,5 +130,31 @@ expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi
 expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 0 ) ).to.be( "Il y a zero cheval!" ) ;
 expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 1 ) ).to.be( "Il y a un cheval!" ) ;
 expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 2 ) ).to.be( "Il y a deux chevaux!" ) ;
+```
+
+should format and localize, and localize translatable variables.
+
+```js
+var babel = Babel.create() ;
+
+// Load a pseudo DB
+babel.extend( {
+	fr: {
+		gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
+		sentence: {
+			"Give me an $1!" : "Donne-moi $1[g?un|une] $1!"
+		} ,
+		word: {
+			apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
+			horse: { g:'m', altn: [ 'cheval' , 'chevaux' ] } ,
+		}
+	}
+} ) ;
+
+expect( babel.solve( "Give me an $1!" , "apple" ) ).to.be( "Give me an apple!" ) ;
+
+var babelFr = babel.use( 'fr' ) ;
+
+expect( babelFr.solve( "Give me an $1!" , "apple" ) ).to.be( "Donne-moi une pomme!" ) ;
 ```
 
