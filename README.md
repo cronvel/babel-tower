@@ -5,11 +5,110 @@
 i18n.
  
 # TOC
+   - [Word solver](#word-solver)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
    - [Language pack and functions](#language-pack-and-functions)
 <a name=""></a>
  
+<a name="word-solver"></a>
+# Word solver
+creating a word from a string should create a translatable Word object.
+
+```js
+expect( Word.create( "horse" ) ).to.eql( { t: "horse" } ) ;
+```
+
+creating a word from a number should create a Word object with a 'n' (number) property.
+
+```js
+expect( Word.create( 3 ) ).to.eql( { n: 3 } ) ;
+```
+
+a Word created from a string should resolve to itself when the word is not in the dictionary.
+
+```js
+expect( Word.create( "horse" ).solve( babel ) ).to.be( "horse" ) ;
+```
+
+a Word created from a string should resolve to the word existing in the dictionary.
+
+```js
+expect( Word.create( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
+```
+
+a Word created with a 'n' and a 'altn' should resolve to the appropriate alternative.
+
+```js
+expect( Word.create( { n: 0 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( Word.create( { n: 1 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( Word.create( { n: 2 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+expect( Word.create( { n: 3 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+
+expect( Word.create( { altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+```
+
+a Word created with a 'g' and a 'altg' should resolve to the appropriate alternative.
+
+```js
+expect( Word.create( { g: 'm' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { g: 'f' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( Word.create( { g: 'n' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { g: 'h' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+
+expect( Word.create( { altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+```
+
+a Word created with a 'n' and/or a 'g' and a 'altng' should resolve to the appropriate alternative.
+
+```js
+expect( Word.create( { n: 0 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 1 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 2 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( Word.create( { n: 3 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+
+expect( Word.create( { n: 0 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( Word.create( { n: 1 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( Word.create( { n: 2 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+expect( Word.create( { n: 3 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+
+expect( Word.create( { n: 0 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 1 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 2 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( Word.create( { n: 3 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+
+expect( Word.create( { g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( Word.create( { g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+
+expect( Word.create( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+```
+
+a Word created with a 'n' and/or 'g' and a 't' should extend the word existing in the dictionary with 'n' and resolve to the appropriate alternative.
+
+```js
+expect( Word.create( { n: 0 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 1 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 2 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( Word.create( { n: 3 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+
+expect( Word.create( { n: 0 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 1 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { n: 2 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( Word.create( { n: 3 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+
+expect( Word.create( { n: 0 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( Word.create( { n: 1 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( Word.create( { n: 2 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+expect( Word.create( { n: 3 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+
+expect( Word.create( { g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( Word.create( { g: 'n' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( Word.create( { g: 'h' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+
+expect( Word.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+```
+
 <a name="basic-usage-without-language-pack"></a>
 # Basic usage without language pack
 should format things accordingly.
@@ -91,7 +190,7 @@ babel.extend( {
 	none: {
 		fn: {
 			nw: function( arg ) {
-				return Babel.Word.create( babel , arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
+				return Word.create( arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
 			}
 		}
 	} ,
@@ -102,10 +201,10 @@ babel.extend( {
 				
 				switch ( arg.n )
 				{
-					case 0: return Babel.Word.create( babel , arg , [ 's' , 'zero' ] ) ;
-					case 1: return Babel.Word.create( babel , arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
-					case 2: return Babel.Word.create( babel , arg , [ 's' , 'deux' ] ) ;
-					case 3: return Babel.Word.create( babel , arg , [ 's' , 'trois' ] ) ;
+					case 0: return Word.create( arg , [ 's' , 'zero' ] ) ;
+					case 1: return Word.create( arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
+					case 2: return Word.create( arg , [ 's' , 'deux' ] ) ;
+					case 3: return Word.create( arg , [ 's' , 'trois' ] ) ;
 					default: return '' + arg.n ;
 				}
 			}
@@ -162,5 +261,8 @@ expect( babel.solve( "Give me an $1!" , "apple" ) ).to.be( "Give me an apple!" )
 var babelFr = babel.use( 'fr' ) ;
 
 expect( babelFr.solve( "Give me an $1!" , "apple" ) ).to.be( "Donne-moi une pomme!" ) ;
+
+expect( babel.solve( "I like $1[n:3]!" , "horses" ) ).to.be( "I like horses!" ) ;
+//expect( babel.solve( "I like $1[n:3]!" , { altn: [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
 ```
 
