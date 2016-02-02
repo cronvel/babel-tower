@@ -1,6 +1,6 @@
 {
   "name": "babel-tower",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "i18n",
   "main": "lib/Babel.js",
   "directories": {

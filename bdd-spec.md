@@ -257,6 +257,6 @@ var babelFr = babel.use( 'fr' ) ;
 expect( babelFr.solve( "Give me an $1!" , "apple" ) ).to.be( "Donne-moi une pomme!" ) ;
 
 expect( babel.solve( "I like $1[n:3]!" , "horses" ) ).to.be( "I like horses!" ) ;
-//expect( babel.solve( "I like $1[n:3]!" , { altn: [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
+expect( babel.solve( "I like $1[n:3]!" , { altn: [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
 ```
 
