@@ -1,7 +1,7 @@
 /*
 	The Cedric's Swiss Knife (CSK) - CSK string toolbox test suite
 
-	Copyright (c) 2014 Cédric Ronvel 
+	Copyright (c) 2016 Cédric Ronvel 
 	
 	The MIT License (MIT)
 
