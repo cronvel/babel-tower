@@ -176,6 +176,7 @@ should format and localize, using language functions.
 
 ```js
 var babel = Babel.create() ;
+var babelFr = babel.use( 'fr' ) ;
 
 var n2w = require( 'number-to-words' ) ;
 
@@ -219,8 +220,6 @@ expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 0 ) ).to.be( "
 expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 1 ) ).to.be( "There is one horse!" ) ;
 expect( babel.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 2 ) ).to.be( "There are two horses!" ) ;
 
-var babelFr = babel.use( 'fr' ) ;
-
 expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 0 ) ).to.be( "Donne-moi zero pomme!" ) ;
 expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 1 ) ).to.be( "Donne-moi une pomme!" ) ;
 expect( babelFr.solve( "Give me $1[nw] apple$1[n?|s]!" , 2 ) ).to.be( "Donne-moi deux pommes!" ) ;
@@ -235,13 +234,15 @@ should format and localize, and localize translatable variables.
 
 ```js
 var babel = Babel.create() ;
+var babelFr = babel.use( 'fr' ) ;
 
 // Load a pseudo DB
 babel.extend( {
 	fr: {
 		gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 		sentence: {
-			"Give me an $1!" : "Donne-moi $1[g?un|une] $1!"
+			"Give me an $1!" : "Donne-moi $1[g?un|une] $1!" ,
+			"I like $1[n:many]!" : "J'aime les $1[n:many]!"
 		} ,
 		word: {
 			apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
@@ -251,12 +252,9 @@ babel.extend( {
 } ) ;
 
 expect( babel.solve( "Give me an $1!" , "apple" ) ).to.be( "Give me an apple!" ) ;
-
-var babelFr = babel.use( 'fr' ) ;
-
 expect( babelFr.solve( "Give me an $1!" , "apple" ) ).to.be( "Donne-moi une pomme!" ) ;
 
-expect( babel.solve( "I like $1[n:3]!" , "horses" ) ).to.be( "I like horses!" ) ;
-expect( babel.solve( "I like $1[n:3]!" , { altn: [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
+expect( babel.solve( "I like $1[n:many]!" , { altn: [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
+expect( babelFr.solve( "I like $1[n:many]!" , "horse" ) ).to.be( "J'aime les chevaux!" ) ;
 ```
 
