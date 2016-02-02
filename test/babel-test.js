@@ -266,7 +266,8 @@ describe( "Language pack and functions" , function() {
 			none: {
 				fn: {
 					nw: function( arg ) {
-						return Word.create( arg , [ 's' , n2w.toWords( arg.n ) ] ) ;
+						arg.s = n2w.toWords( arg.n ) ;
+						return arg ;
 					}
 				}
 			} ,
@@ -277,12 +278,14 @@ describe( "Language pack and functions" , function() {
 						
 						switch ( arg.n )
 						{
-							case 0: return Word.create( arg , [ 's' , 'zero' ] ) ;
-							case 1: return Word.create( arg , [ 'altg' , [ 'un' , 'une' ] ] ) ;
-							case 2: return Word.create( arg , [ 's' , 'deux' ] ) ;
-							case 3: return Word.create( arg , [ 's' , 'trois' ] ) ;
-							default: return '' + arg.n ;
+							case 0: arg.s = 'zero' ; break ;
+							case 1: arg.altg = [ 'un' , 'une' ] ; break ;
+							case 2: arg.s = 'deux' ; break ;
+							case 3: arg.s = 'trois' ; break ;
+							default: arg.s = '' + arg.n ;
 						}
+						
+						return arg ;
 					}
 				} ,
 				sentence: {
