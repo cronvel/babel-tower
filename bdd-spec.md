@@ -2,6 +2,7 @@
    - [Word solver](#word-solver)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
+   - [Advanced features](#advanced-features)
    - [Language pack and functions](#language-pack-and-functions)
 <a name=""></a>
  
@@ -217,6 +218,17 @@ expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Donne-moi 0 p
 expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 1 ) ).to.be( "Donne-moi 1 pomme!" ) ;
 expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 2 ) ).to.be( "Donne-moi 2 pommes!" ) ;
 expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 pommes!" ) ;
+```
+
+<a name="advanced-features"></a>
+# Advanced features
+enumeration.
+
+```js
+var babel = Babel.create() ;
+return ;
+expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange" ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple, pear and orange" ) ;
 ```
 
 <a name="language-pack-and-functions"></a>

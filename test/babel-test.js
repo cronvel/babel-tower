@@ -253,6 +253,18 @@ describe( "Basic usage with language pack" , function() {
 
 
 
+describe( "Advanced features" , function() {
+	
+	it( "enumeration" , function() {
+		var babel = Babel.create() ;
+		return ;
+		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange" ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple, pear and orange" ) ;
+	} ) ;
+} ) ;
+
+
+
 describe( "Language pack and functions" , function() {
 	
 	it( "should format and localize, using language functions" , function() {
