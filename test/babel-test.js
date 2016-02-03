@@ -402,4 +402,76 @@ describe( "Advanced feature: enumeration" , function() {
 
 
 
+describe( "Post-filters" , function() {
+	
+	it( "should apply post-filters 'uc1' (upper-case first letter)" , function() {
+		var babel = Babel.create() ;
+		var babelFr = babel.use( 'fr' ) ;
+		
+		// Load a pseudo DB
+		babel.extend( {
+			fr: {
+				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
+				sentence: {
+					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
+					"$1[n:many//uc1]: I like that!": "$1[n:many//uc1]: j'adore ça!"
+				} ,
+				word: {
+					apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
+					pear: { g:'f', altn: [ 'poire' , 'poires' ] }
+				}
+			}
+		} ) ;
+		
+		expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
+		expect( babel.solve( "$1[//uc1]: I like that!" , "pear" ) ).to.be( "Pear: I like that!" ) ;
+		
+		expect( babelFr.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Pomme: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[//uc1]: I like that!" , "pear" ) ).to.be( "Poire: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "apple" ) ).to.be( "Pommes: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "pear" ) ).to.be( "Poires: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[//uc1]: I like that!" , { t:"apple", n:'many'} ) ).to.be( "Pommes: j'adore ça!" ) ;
+	} ) ;
+} ) ;
+
+
+
+describe( "'en'/'fr' core langpack" , function() {
+	
+	it( "xxx" , function() {
+		var babel = Babel.create() ;
+		var babelEn = babel.use( 'en' ) ;
+		var babelFr = babel.use( 'fr' ) ;
+		
+		babel.extend( require( '../lib/en.js' ) ) ;
+		babel.extend( require( '../lib/fr.js' ) ) ;
+		
+		babel.extend( {
+			fr: {
+				sentence: {
+					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
+					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
+					"xxx": "$1[artDef] $1." ,
+				} ,
+				word: {
+					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' }
+				}
+			}
+		} ) ;
+		
+		expect( babelEn.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "I am happy." ) ;
+		expect( babelEn.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "We are happy." ) ;
+		expect( babelEn.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "It is happy." ) ;
+		expect( babelEn.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "They are happy." ) ;
+		
+		expect( babelFr.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "Je suis content." ) ;
+		expect( babelFr.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "Nous sommes contents." ) ;
+		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
+		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
+		
+		//expect( babelFr.solve( "xxx" , "tree" ) ).to.be( "l'arbre." ) ;
+	} ) ;
+} ) ;
+
+
  
