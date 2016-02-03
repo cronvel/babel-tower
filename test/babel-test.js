@@ -371,31 +371,8 @@ describe( "Advanced feature: enumeration" , function() {
 		
 		// Load a pseudo DB
 		babel.extend( {
-			none: {
-				fn: {
-					nw: function( arg ) {
-						arg.s = n2w.toWords( arg.n ) ;
-						return arg ;
-					}
-				}
-			} ,
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-				fn: {
-					nw: function( arg ) {
-						
-						switch ( arg.n )
-						{
-							case 0: arg.s = 'zero' ; break ;
-							case 1: arg.altg = [ 'un' , 'une' ] ; break ;
-							case 2: arg.s = 'deux' ; break ;
-							case 3: arg.s = 'trois' ; break ;
-							default: arg.s = '' + arg.n ;
-						}
-						
-						return arg ;
-					}
-				} ,
 				sentence: {
 					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." :
 						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$[ng?(un|une)|(des)] $|, $[ng?(un|une)|(des)] $| et $[ng?(un|une)|(des)] $]."
@@ -419,6 +396,7 @@ describe( "Advanced feature: enumeration" , function() {
 		expect( babelFr.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "Je veux deux choses: une poire et une fraise." ) ;
 		expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
 		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
+		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
 	} ) ;
 } ) ;
 
