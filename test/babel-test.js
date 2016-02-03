@@ -469,7 +469,7 @@ describe( "'en'/'fr' core langpack" , function() {
 		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
 		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
 		
-		//expect( babelFr.solve( "xxx" , "tree" ) ).to.be( "l'arbre." ) ;
+		expect( babelFr.solve( "xxx" , "tree" ) ).to.be( "l' arbre." ) ;
 	} ) ;
 } ) ;
 
