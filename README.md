@@ -8,7 +8,7 @@ i18n.
    - [Word solver](#word-solver)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
-   - [Advanced features](#advanced-features)
+   - [Advanced feature: enumeration](#advanced-feature-enumeration)
    - [Language pack and functions](#language-pack-and-functions)
 <a name=""></a>
  
@@ -226,15 +226,31 @@ expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 2 ) ).to.be( "Donne-moi 2 p
 expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 pommes!" ) ;
 ```
 
-<a name="advanced-features"></a>
-# Advanced features
-enumeration.
+<a name="advanced-feature-enumeration"></a>
+# Advanced feature: enumeration
+context object should be used as '$'.
 
 ```js
 var babel = Babel.create() ;
-return ;
-expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange" ) ;
-expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple, pear and orange" ) ;
+expect( babel.solveArray( "I want $." , [] , "you" ) ).to.be( "I want you." ) ;
+```
+
+basic enumeration with no rules should simply join with a space.
+
+```js
+var babel = Babel.create() ;
+expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
+```
+
+enumeration with variable length.
+
+```js
+var babel = Babel.create() ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
 ```
 
 <a name="language-pack-and-functions"></a>

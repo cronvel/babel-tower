@@ -253,13 +253,25 @@ describe( "Basic usage with language pack" , function() {
 
 
 
-describe( "Advanced features" , function() {
+describe( "Advanced feature: enumeration" , function() {
 	
-	it( "enumeration" , function() {
+	it( "context object should be used as '$'" , function() {
 		var babel = Babel.create() ;
-		return ;
-		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange" ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple, pear and orange" ) ;
+		expect( babel.solveArray( "I want $." , [] , "you" ) ).to.be( "I want you." ) ;
+	} ) ;
+	
+	it( "basic enumeration with no rules should simply join with a space" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
+	} ) ;
+	
+	it( "enumeration with variable length" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
 	} ) ;
 } ) ;
 
