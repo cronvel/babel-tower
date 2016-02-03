@@ -68,8 +68,6 @@ describe( "Word solver" , function() {
 		expect( Word.create( 3 ) ).to.eql( { n: 3 } ) ;
 	} ) ;
 	
-	it( "creating a word from an array should create a Word object with alternative or a sentence?" ) ;
-	
 	it( "a Word created from a string should resolve to itself when the word is not in the dictionary" , function() {
 		expect( Word.create( "horse" ).solve( babel ) ).to.be( "horse" ) ;
 	} ) ;
@@ -253,30 +251,6 @@ describe( "Basic usage with language pack" , function() {
 
 
 
-describe( "Advanced feature: enumeration" , function() {
-	
-	it( "context object should be used as '$'" , function() {
-		var babel = Babel.create() ;
-		expect( babel.solveArray( "I want $." , [] , "you" ) ).to.be( "I want you." ) ;
-	} ) ;
-	
-	it( "basic enumeration with no rules should simply join with a space" , function() {
-		var babel = Babel.create() ;
-		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
-	} ) ;
-	
-	it( "enumeration with variable length" , function() {
-		var babel = Babel.create() ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
-	} ) ;
-} ) ;
-
-
-
 describe( "Language pack and functions" , function() {
 	
 	it( "should format and localize, using language functions" , function() {
@@ -365,5 +339,89 @@ describe( "Language pack and functions" , function() {
 		expect( babelFr.solve( "I like $1[n:many]!" , "horse" ) ).to.be( "J'aime les chevaux!" ) ;
 	} ) ;
 } ) ;
+
+
+
+describe( "Advanced feature: enumeration" , function() {
+	
+	it( "context object should be used as '$'" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solveArray( "I want $." , [] , "you" ) ).to.be( "I want you." ) ;
+	} ) ;
+	
+	it( "basic enumeration with no rules should simply join with a space" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
+	} ) ;
+	
+	it( "enumeration with variable length" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
+	} ) ;
+	
+	it( "enumeration with variable length, translation and operators in enumeration" , function() {
+		var babel = Babel.create() ;
+		var babelFr = babel.use( 'fr' ) ;
+		
+		var n2w = require( 'number-to-words' ) ;
+		
+		// Load a pseudo DB
+		babel.extend( {
+			none: {
+				fn: {
+					nw: function( arg ) {
+						arg.s = n2w.toWords( arg.n ) ;
+						return arg ;
+					}
+				}
+			} ,
+			fr: {
+				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
+				fn: {
+					nw: function( arg ) {
+						
+						switch ( arg.n )
+						{
+							case 0: arg.s = 'zero' ; break ;
+							case 1: arg.altg = [ 'un' , 'une' ] ; break ;
+							case 2: arg.s = 'deux' ; break ;
+							case 3: arg.s = 'trois' ; break ;
+							default: arg.s = '' + arg.n ;
+						}
+						
+						return arg ;
+					}
+				} ,
+				sentence: {
+					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." :
+						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$[ng?(un|une)|(des)] $|, $[ng?(un|une)|(des)] $| et $[ng?(un|une)|(des)] $]."
+				} ,
+				word: {
+					"pear": { altn: [ 'poire' , 'poires' ] , g: 'f' } ,
+					"banana": { altn: [ 'banane' , 'bananes' ] , g: 'f' } ,
+					"strawberry": { altn: [ 'fraise' , 'fraises' ] , g: 'f' }
+				}
+			}
+		} ) ;
+		
+		var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." ;
+		expect( babel.solve( sentence , [] ) ).to.be( "I want nothing." ) ;
+		expect( babel.solve( sentence , [ "pear" ] ) ).to.be( "I want something: a pear." ) ;
+		expect( babel.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "I want two things: a pear and a strawberry." ) ;
+		expect( babel.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "I want many things: a pear, a banana and a strawberry." ) ;
+		
+		expect( babelFr.solve( sentence , [] ) ).to.be( "Je ne veux rien." ) ;
+		expect( babelFr.solve( sentence , [ "pear" ] ) ).to.be( "Je veux quelque chose: une poire." ) ;
+		expect( babelFr.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "Je veux deux choses: une poire et une fraise." ) ;
+		expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
+		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
+	} ) ;
+} ) ;
+
+
 
  
