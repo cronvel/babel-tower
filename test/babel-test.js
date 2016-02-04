@@ -386,6 +386,7 @@ describe( "Advanced feature: enumeration" , function() {
 		} ) ;
 		
 		var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." ;
+		
 		expect( babel.solve( sentence , [] ) ).to.be( "I want nothing." ) ;
 		expect( babel.solve( sentence , [ "pear" ] ) ).to.be( "I want something: a pear." ) ;
 		expect( babel.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "I want two things: a pear and a strawberry." ) ;
@@ -395,6 +396,7 @@ describe( "Advanced feature: enumeration" , function() {
 		expect( babelFr.solve( sentence , [ "pear" ] ) ).to.be( "Je veux quelque chose: une poire." ) ;
 		expect( babelFr.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "Je veux deux choses: une poire et une fraise." ) ;
 		expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
+		
 		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
 		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
 	} ) ;
@@ -436,9 +438,9 @@ describe( "Post-filters" , function() {
 
 
 
-describe( "'en'/'fr' core langpack" , function() {
+describe( "'en'/'fr' core langpack features" , function() {
 	
-	it( "xxx" , function() {
+	it( "testing few features" , function() {
 		var babel = Babel.create() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
@@ -451,10 +453,13 @@ describe( "'en'/'fr' core langpack" , function() {
 				sentence: {
 					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
-					"xxx": "$1[artDef] $1." ,
+					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gl?(le beau|le bel)|(la belle)] $1." ,
 				} ,
 				word: {
-					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' }
+					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
+					oak: { altn: [ "chêne" , "chênes" ] , g: 'm' } ,
+					flower: { altn: [ "fleur" , "fleurs" ] , g: 'f' } ,
+					bee: { altn: [ "abeille" , "abeilles" ] , g: 'f' } ,
 				}
 			}
 		} ) ;
@@ -469,7 +474,12 @@ describe( "'en'/'fr' core langpack" , function() {
 		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
 		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
 		
-		expect( babelFr.solve( "xxx" , "tree" ) ).to.be( "l' arbre." ) ;
+		expect( babelEn.solve( "$1[//uc1], beautiful $1." , "tree" ) ).to.be( "Tree, beautiful tree." ) ;
+		
+		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "tree" ) ).to.be( "L'arbre, le bel arbre." ) ;
+		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "oak" ) ).to.be( "Le chêne, le beau chêne." ) ;
+		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "flower" ) ).to.be( "La fleur, la belle fleur." ) ;
+		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "bee" ) ).to.be( "L'abeille, la belle abeille." ) ;
 	} ) ;
 } ) ;
 
