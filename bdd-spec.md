@@ -431,6 +431,7 @@ babel.extend( {
 			"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 			"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
 			"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gl?(le beau|le bel)|(la belle)] $1." ,
+			"I want a $1.": "Je veux $1[artIndef] $1."
 		} ,
 		word: {
 			tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
@@ -457,5 +458,11 @@ expect( babelFr.solve( "$1[//uc1], beautiful $1." , "tree" ) ).to.be( "L'arbre, 
 expect( babelFr.solve( "$1[//uc1], beautiful $1." , "oak" ) ).to.be( "Le chêne, le beau chêne." ) ;
 expect( babelFr.solve( "$1[//uc1], beautiful $1." , "flower" ) ).to.be( "La fleur, la belle fleur." ) ;
 expect( babelFr.solve( "$1[//uc1], beautiful $1." , "bee" ) ).to.be( "L'abeille, la belle abeille." ) ;
+
+expect( babelEn.solve( "I want a $1." , "tree" ) ).to.be( "I want a tree." ) ;
+
+expect( babelFr.solve( "I want a $1." , "tree" ) ).to.be( "Je veux un arbre." ) ;
+expect( babelFr.solve( "I want a $1." , "flower" ) ).to.be( "Je veux une fleur." ) ;
+expect( babelFr.solve( "I want a $1." , { t:"flower",n:"many"} ) ).to.be( "Je veux des fleurs." ) ;
 ```
 
