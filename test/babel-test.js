@@ -33,6 +33,7 @@
 
 var Babel = require( '../lib/Babel.js' ) ;
 var Word = Babel.Word ;
+
 var expect = require( 'expect.js' ) ;
 
 
@@ -489,6 +490,29 @@ describe( "'en'/'fr' core langpack features" , function() {
 		expect( babelFr.solve( "I want a $1." , { t:"flower",n:"many"} ) ).to.be( "Je veux des fleurs." ) ;
 	} ) ;
 } ) ;
+
+
+
+describe( "String-kit's format() interoperability" , function() {
+	
+	var ansi = require( 'string-kit' ).ansi ;
+	
+	it( "should format things mixing string-kit format()'s '%' (percent)syntax and babel-tower syntax accordingly" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.solve( "Give me %1d apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
+		expect( babel.solve( "Give me %1d apple$1[altn:|s]! %2J" , 1 , {a:1,b:2} ) ).to.be( 'Give me 1 apple! {"a":1,"b":2}' ) ;
+	} ) ;
+	
+	it( "should format things mixing string-kit format()'s '^' (caret) syntax and babel-tower syntax accordingly" , function() {
+		var babel = Babel.create() ;
+		
+		//console.log( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ) ;
+		expect( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ).to.be( "Give me " + ansi.red + "1 " + ansi.green + ansi.italic + "apple" + ansi.reset + "!" + ansi.reset ) ;
+	} ) ;
+	
+} ) ;
+
 
 
  

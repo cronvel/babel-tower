@@ -6,6 +6,7 @@
    - [Advanced feature: enumeration](#advanced-feature-enumeration)
    - [Post-filters](#post-filters)
    - ['en'/'fr' core langpack features](#enfr-core-langpack-features)
+   - [String-kit's format() interoperability](#string-kits-format-interoperability)
 <a name=""></a>
  
 <a name="word-solver"></a>
@@ -464,5 +465,25 @@ expect( babelEn.solve( "I want a $1." , "tree" ) ).to.be( "I want a tree." ) ;
 expect( babelFr.solve( "I want a $1." , "tree" ) ).to.be( "Je veux un arbre." ) ;
 expect( babelFr.solve( "I want a $1." , "flower" ) ).to.be( "Je veux une fleur." ) ;
 expect( babelFr.solve( "I want a $1." , { t:"flower",n:"many"} ) ).to.be( "Je veux des fleurs." ) ;
+```
+
+<a name="string-kits-format-interoperability"></a>
+# String-kit's format() interoperability
+should format things mixing string-kit format()'s '%' (percent)syntax and babel-tower syntax accordingly.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "Give me %1d apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
+expect( babel.solve( "Give me %1d apple$1[altn:|s]! %2J" , 1 , {a:1,b:2} ) ).to.be( 'Give me 1 apple! {"a":1,"b":2}' ) ;
+```
+
+should format things mixing string-kit format()'s '^' (caret) syntax and babel-tower syntax accordingly.
+
+```js
+var babel = Babel.create() ;
+
+//console.log( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ) ;
+expect( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ).to.be( "Give me " + ansi.red + "1 " + ansi.green + ansi.italic + "apple" + ansi.reset + "!" + ansi.reset ) ;
 ```
 
