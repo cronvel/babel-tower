@@ -29,6 +29,8 @@
 /* jshint unused:false */
 /* global describe, it, before, after */
 
+"use strict" ;
+
 
 
 var Babel = require( '../lib/Babel.js' ) ;
