@@ -220,7 +220,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Hello $1{bob.firstName} $1{bob.lastName} and $1{alice.firstName} $1{alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
 	} ) ;
 		
-	it( "$ without number should use the first arg if no context is given" , function() {
+	it( "$ without number should use the first arg, just like $1" , function() {
 		var babel = Babel.create() ;
 		
 		var data = {
@@ -232,6 +232,20 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 } ) ;
 
+
+
+describe( "Sentence instances" , function() {
+		
+	it( "Basic sentence" , function() {
+		var sentence = Babel.Sentence.create( "Give me $1 apple$1[altn:|s]!" ) ;
+		
+		expect( sentence.toString( 0 ) ).to.be( "Give me 0 apple!" ) ;
+		expect( sentence.toString( 1 ) ).to.be( "Give me 1 apple!" ) ;
+		expect( sentence.toString( 2 ) ).to.be( "Give me 2 apples!" ) ;
+		expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
+	} ) ;
+} ) ;
+		
 
 
 describe( "Basic usage with language pack" , function() {
@@ -371,9 +385,9 @@ describe( "Language pack and functions" , function() {
 
 describe( "Advanced feature: enumeration" , function() {
 	
-	it( "context object should be used as '$'" , function() {
+	it( "context object should be used as '$#'" , function() {
 		var babel = Babel.create() ;
-		expect( babel.solveArray( "I want $." , [] , "you" ) ).to.be( "I want you." ) ;
+		expect( babel.solveArray( "I want $#." , [] , "you" ) ).to.be( "I want you." ) ;
 	} ) ;
 	
 	it( "basic enumeration with no rules should simply join with a space" , function() {
@@ -383,11 +397,11 @@ describe( "Advanced feature: enumeration" , function() {
 	
 	it( "enumeration with variable length" , function() {
 		var babel = Babel.create() ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
-		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [] ) ).to.be( "I want nothing." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
+		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
 	} ) ;
 	
 	it( "enumeration with variable length, translation and operators in enumeration" , function() {
@@ -401,8 +415,8 @@ describe( "Advanced feature: enumeration" , function() {
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 				sentence: {
-					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." :
-						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$[ng?(un|une)|(des)] $|, $[ng?(un|une)|(des)] $| et $[ng?(un|une)|(des)] $]."
+					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." :
+						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$#[ng?(un|une)|(des)] $#|, $#[ng?(un|une)|(des)] $#| et $#[ng?(un|une)|(des)] $#]."
 				} ,
 				word: {
 					"pear": { altn: [ 'poire' , 'poires' ] , g: 'f' } ,
@@ -412,7 +426,7 @@ describe( "Advanced feature: enumeration" , function() {
 			}
 		} ) ;
 		
-		var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." ;
+		var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." ;
 		
 		expect( babel.solve( sentence , [] ) ).to.be( "I want nothing." ) ;
 		expect( babel.solve( sentence , [ "pear" ] ) ).to.be( "I want something: a pear." ) ;
