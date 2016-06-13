@@ -1,20 +1,20 @@
 /*
-	The Cedric's Swiss Knife (CSK) - CSK string toolbox test suite
-
-	Copyright (c) 2016 Cédric Ronvel 
+	Babel Tower
+	
+	Copyright (c) 2016 Cédric Ronvel
 	
 	The MIT License (MIT)
-
+	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
 	in the Software without restriction, including without limitation the rights
 	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-
+	
 	The above copyright notice and this permission notice shall be included in all
 	copies or substantial portions of the Software.
-
+	
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -147,7 +147,7 @@ describe( "Word solver" , function() {
 
 
 describe( "Basic usage without language pack" , function() {
-	
+		
 	it( "should format things accordingly" , function() {
 		var babel = Babel.create() ;
 		
@@ -205,6 +205,30 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:1,g:'f'} ) ).to.be( "J'aime la jument!" ) ;
 		expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 0 ) ).to.be( "J'aime aucun cheval!" ) ;
 		expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:0,g:'f'} ) ).to.be( "J'aime aucune jument!" ) ;
+	} ) ;
+	
+	it( "should work with objects, using the path syntax" , function() {
+		var babel = Babel.create() ;
+		
+		var data = {
+			bob: { firstName: "Bobby" , lastName: "Fischer" } ,
+			alice: { firstName: "Alice" , lastName: "M." } ,
+		} ;
+		
+		expect( babel.solve( "Hello $1{firstName}!" , data.bob ) ).to.be( "Hello Bobby!" ) ;
+		expect( babel.solve( "Hello $1{firstName} $1{lastName}!" , data.bob ) ).to.be( "Hello Bobby Fischer!" ) ;
+		expect( babel.solve( "Hello $1{bob.firstName} $1{bob.lastName} and $1{alice.firstName} $1{alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
+	} ) ;
+		
+	it( "$ without number should use the first arg if no context is given" , function() {
+		var babel = Babel.create() ;
+		
+		var data = {
+			bob: { firstName: "Bobby" , lastName: "Fischer" } ,
+			alice: { firstName: "Alice" , lastName: "M." } ,
+		} ;
+		
+		expect( babel.solve( "Hello ${bob.firstName} ${bob.lastName} and ${alice.firstName} ${alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
 	} ) ;
 } ) ;
 

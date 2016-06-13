@@ -1,19 +1,20 @@
 {
   "name": "babel-tower",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "i18n",
   "main": "lib/Babel.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "string-kit": "^0.4.1"
+    "string-kit": "^0.5.7",
+    "tree-kit": "^0.5.20"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "jshint": "^2.5.6",
-    "mocha": "^2.2.4",
-    "number-to-words": "^1.2.1"
+    "jshint": "^2.9.2",
+    "mocha": "^2.5.3",
+    "number-to-words": "^1.2.2"
   },
   "scripts": {
     "test": "mocha -R dot"
@@ -29,5 +30,12 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cronvel/babel-tower/issues"
+  },
+  "copyright": {
+    "title": "Babel Tower",
+    "years": [
+      2016
+    ],
+    "owner": "Cédric Ronvel"
   }
 }

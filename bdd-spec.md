@@ -180,6 +180,34 @@ expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|
 expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:0,g:'f'} ) ).to.be( "J'aime aucune jument!" ) ;
 ```
 
+should work with objects, using the path syntax.
+
+```js
+var babel = Babel.create() ;
+
+var data = {
+	bob: { firstName: "Bobby" , lastName: "Fischer" } ,
+	alice: { firstName: "Alice" , lastName: "M." } ,
+} ;
+
+expect( babel.solve( "Hello $1{firstName}!" , data.bob ) ).to.be( "Hello Bobby!" ) ;
+expect( babel.solve( "Hello $1{firstName} $1{lastName}!" , data.bob ) ).to.be( "Hello Bobby Fischer!" ) ;
+expect( babel.solve( "Hello $1{bob.firstName} $1{bob.lastName} and $1{alice.firstName} $1{alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
+```
+
+$ without number should use the first arg if no context is given.
+
+```js
+var babel = Babel.create() ;
+
+var data = {
+	bob: { firstName: "Bobby" , lastName: "Fischer" } ,
+	alice: { firstName: "Alice" , lastName: "M." } ,
+} ;
+
+expect( babel.solve( "Hello ${bob.firstName} ${bob.lastName} and ${alice.firstName} ${alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
+```
+
 <a name="basic-usage-with-language-pack"></a>
 # Basic usage with language pack
 should format and localize.
