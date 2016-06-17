@@ -477,6 +477,20 @@ describe( "Post-filters" , function() {
 		
 		expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.be( "Apple: I like that!" ) ;
 	} ) ;
+	
+	it( "should apply post-filters various filters combination" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
+		expect( babel.solve( "$1[//uc]: I like that!" , "apple" ) ).to.be( "APPLE: I like that!" ) ;
+		expect( babel.solve( "$1[//lc]: I like that!" , "APPLE" ) ).to.be( "apple: I like that!" ) ;
+		expect( babel.solve( "$1[//lc/uc1]: I like that!" , "APPLE" ) ).to.be( "Apple: I like that!" ) ;
+		
+		expect( babel.solve( "${fruit//lc/uc1}: I like that!" , { fruit: "APPLE" } ) ).to.be( "Apple: I like that!" ) ;
+		
+		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "simple" } ) ).to.be( "echo 'simple'" ) ;
+		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
+	} ) ;
 } ) ;
 
 
