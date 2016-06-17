@@ -491,6 +491,8 @@ describe( "Post-filters" , function() {
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "simple" } ) ).to.be( "echo 'simple'" ) ;
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
 	} ) ;
+	
+	it( "more filters tests..." ) ;
 } ) ;
 
 
