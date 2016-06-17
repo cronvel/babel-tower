@@ -474,6 +474,8 @@ describe( "Post-filters" , function() {
 		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "apple" ) ).to.be( "Pommes: j'adore ça!" ) ;
 		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "pear" ) ).to.be( "Poires: j'adore ça!" ) ;
 		expect( babelFr.solve( "$1[//uc1]: I like that!" , { t:"apple", n:'many'} ) ).to.be( "Pommes: j'adore ça!" ) ;
+		
+		expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.be( "Apple: I like that!" ) ;
 	} ) ;
 } ) ;
 
