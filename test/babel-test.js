@@ -154,6 +154,14 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 	} ) ;
 	
+	it( "should use .toString() on arguments" , function() {
+		var babel = Babel.create() ;
+		var o = {} ;
+		o.toString = function() { return "ooo" ; } ;
+		
+		expect( babel.solve( "Give me $!" , o ) ).to.be( "Give me ooo!" ) ;
+	} ) ;
+	
 	it( "should format things accordingly" , function() {
 		var babel = Babel.create() ;
 		

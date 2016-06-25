@@ -118,6 +118,16 @@ var babel = Babel.create() ;
 expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 ```
 
+should use .toString() on arguments.
+
+```js
+var babel = Babel.create() ;
+var o = {} ;
+o.toString = function() { return "ooo" ; } ;
+
+expect( babel.solve( "Give me $!" , o ) ).to.be( "Give me ooo!" ) ;
+```
+
 should format things accordingly.
 
 ```js
