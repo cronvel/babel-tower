@@ -148,6 +148,12 @@ describe( "Word solver" , function() {
 
 describe( "Basic usage without language pack" , function() {
 		
+	it( "should format $$ into $" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
+	} ) ;
+	
 	it( "should format things accordingly" , function() {
 		var babel = Babel.create() ;
 		
@@ -156,7 +162,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 2 ) ).to.be( "Give me 2 apples!" ) ;
 		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
-		
+	
 	it( "should format things accordingly using short-hand notation" , function() {
 		var babel = Babel.create() ;
 		

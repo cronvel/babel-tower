@@ -116,6 +116,14 @@ expect( Word.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 
 <a name="basic-usage-without-language-pack"></a>
 # Basic usage without language pack
+should format $$ into $.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
+```
+
 should format things accordingly.
 
 ```js
