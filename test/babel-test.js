@@ -506,6 +506,15 @@ describe( "Post-filters" , function() {
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
 	} ) ;
 	
+	it( "should apply path post-filters" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "$[//extname]" , "README.md" ) ).to.be( ".md" ) ;
+		expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
+		expect( babel.solve( "$[//basename]" , "~/somedir/README.md" ) ).to.be( "README.md" ) ;
+		expect( babel.solve( "$[//basenameNoExt]" , "~/somedir/README.md" ) ).to.be( "README" ) ;
+		expect( babel.solve( "$[//dirname]" , "~/somedir/README.md" ) ).to.be( "~/somedir" ) ;
+	} ) ;
+	
 	it( "more filters tests..." ) ;
 } ) ;
 

@@ -492,6 +492,17 @@ expect( babel.solve( "echo ${arg//shellarg}" , { arg: "simple" } ) ).to.be( "ech
 expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
 ```
 
+should apply path post-filters.
+
+```js
+var babel = Babel.create() ;
+expect( babel.solve( "$[//extname]" , "README.md" ) ).to.be( ".md" ) ;
+expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
+expect( babel.solve( "$[//basename]" , "~/somedir/README.md" ) ).to.be( "README.md" ) ;
+expect( babel.solve( "$[//basenameNoExt]" , "~/somedir/README.md" ) ).to.be( "README" ) ;
+expect( babel.solve( "$[//dirname]" , "~/somedir/README.md" ) ).to.be( "~/somedir" ) ;
+```
+
 <a name="enfr-core-langpack-features"></a>
 # 'en'/'fr' core langpack features
 testing few features.
