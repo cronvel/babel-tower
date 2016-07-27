@@ -576,20 +576,18 @@ describe( "'en'/'fr' core langpack features" , function() {
 
 describe( "String-kit's format() interoperability" , function() {
 	
-	var ansi = require( 'string-kit' ).ansi ;
-	
-	it( "should format things mixing string-kit format()'s '%' (percent)syntax and babel-tower syntax accordingly" , function() {
-		var babel = Babel.create() ;
+	it( "should escape argument using the autoEscape regexp" , function() {
+		var babel , regex ;
 		
-		expect( babel.solve( "Give me %1d apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
-		expect( babel.solve( "Give me %1d apple$1[altn:|s]! %2J" , 1 , {a:1,b:2} ) ).to.be( 'Give me 1 apple! {"a":1,"b":2}' ) ;
-	} ) ;
-	
-	it( "should format things mixing string-kit format()'s '^' (caret) syntax and babel-tower syntax accordingly" , function() {
-		var babel = Babel.create() ;
+		babel = Babel.create() ;
+		expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
+		expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^le^:!" ) ;
 		
-		//console.log( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ) ;
-		expect( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ).to.be( "Give me " + ansi.red + "1 " + ansi.green + ansi.italic + "apple" + ansi.reset + "!" + ansi.reset ) ;
+		regex = /(\^|%)/g ;
+		regex.substitution = '$1$1' ;
+		babel = Babel.create( regex ) ;
+		expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
+		expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
 	} ) ;
 	
 } ) ;

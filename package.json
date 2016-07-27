@@ -1,14 +1,14 @@
 {
   "name": "babel-tower",
-  "version": "0.6.13",
+  "version": "0.7.0",
   "description": "i18n",
   "main": "lib/Babel.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "string-kit": "^0.5.8",
-    "tree-kit": "^0.5.24"
+    "string-kit": "^0.5.9",
+    "tree-kit": "^0.5.26"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",

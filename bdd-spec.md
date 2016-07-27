@@ -558,21 +558,19 @@ expect( babelFr.solve( "I want a $1." , { t:"flower",n:"many"} ) ).to.be( "Je ve
 
 <a name="string-kits-format-interoperability"></a>
 # String-kit's format() interoperability
-should format things mixing string-kit format()'s '%' (percent)syntax and babel-tower syntax accordingly.
+should escape argument using the autoEscape regexp.
 
 ```js
-var babel = Babel.create() ;
+var babel , regex ;
 
-expect( babel.solve( "Give me %1d apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
-expect( babel.solve( "Give me %1d apple$1[altn:|s]! %2J" , 1 , {a:1,b:2} ) ).to.be( 'Give me 1 apple! {"a":1,"b":2}' ) ;
-```
+babel = Babel.create() ;
+expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
+expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^le^:!" ) ;
 
-should format things mixing string-kit format()'s '^' (caret) syntax and babel-tower syntax accordingly.
-
-```js
-var babel = Babel.create() ;
-
-//console.log( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ) ;
-expect( babel.solve( "Give me ^r%1d ^g^/apple$1[altn:|s]^:!" , 1 ) ).to.be( "Give me " + ansi.red + "1 " + ansi.green + ansi.italic + "apple" + ansi.reset + "!" + ansi.reset ) ;
+regex = /(\^|%)/g ;
+regex.substitution = '$1$1' ;
+babel = Babel.create( regex ) ;
+expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
+expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
 ```
 
