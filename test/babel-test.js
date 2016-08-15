@@ -258,8 +258,14 @@ describe( "Sentence instances" , function() {
 		expect( sentence.toString( 2 ) ).to.be( "Give me 2 apples!" ) ;
 		expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
-} ) ;
 		
+	it( ".toStringCtx()" , function() {
+		var sentence = Babel.Sentence.create( "I like ${this.name}!" ) ;
+		
+		expect( sentence.toStringCtx( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
+	} ) ;
+} ) ;
+
 
 
 describe( "Basic usage with language pack" , function() {

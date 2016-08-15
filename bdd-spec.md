@@ -240,6 +240,14 @@ expect( sentence.toString( 2 ) ).to.be( "Give me 2 apples!" ) ;
 expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 ```
 
+.toStringCtx().
+
+```js
+var sentence = Babel.Sentence.create( "I like ${this.name}!" ) ;
+
+expect( sentence.toStringCtx( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
+```
+
 <a name="basic-usage-with-language-pack"></a>
 # Basic usage with language pack
 should format and localize.
