@@ -249,9 +249,9 @@ expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 .toStringKFG().
 
 ```js
-var sentence = Babel.Sentence.create( "I like ${name} and ${this.name}!" ) ;
+var sentence = Babel.Sentence.create( "I like ${name}!" ) ;
 
-expect( sentence.toStringKFG( { name: 'apples' } , { name: 'strawberries' } ) ).to.be( "I like apples and strawberries!" ) ;
+expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
 ```
 
 <a name="basic-usage-with-language-pack"></a>

@@ -260,9 +260,9 @@ describe( "Sentence instances" , function() {
 	} ) ;
 		
 	it( ".toStringKFG()" , function() {
-		var sentence = Babel.Sentence.create( "I like ${name} and ${this.name}!" ) ;
+		var sentence = Babel.Sentence.create( "I like ${name}!" ) ;
 		
-		expect( sentence.toStringKFG( { name: 'apples' } , { name: 'strawberries' } ) ).to.be( "I like apples and strawberries!" ) ;
+		expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
 	} ) ;
 } ) ;
 
