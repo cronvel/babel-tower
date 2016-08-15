@@ -246,12 +246,12 @@ expect( sentence.toString( 2 ) ).to.be( "Give me 2 apples!" ) ;
 expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 ```
 
-.toStringCtx().
+.toStringKFG().
 
 ```js
-var sentence = Babel.Sentence.create( "I like ${this.name}!" ) ;
+var sentence = Babel.Sentence.create( "I like ${name} and ${this.name}!" ) ;
 
-expect( sentence.toStringCtx( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
+expect( sentence.toStringKFG( { name: 'apples' } , { name: 'strawberries' } ) ).to.be( "I like apples and strawberries!" ) ;
 ```
 
 <a name="basic-usage-with-language-pack"></a>

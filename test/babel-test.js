@@ -259,10 +259,10 @@ describe( "Sentence instances" , function() {
 		expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 		
-	it( ".toStringCtx()" , function() {
-		var sentence = Babel.Sentence.create( "I like ${this.name}!" ) ;
+	it( ".toStringKFG()" , function() {
+		var sentence = Babel.Sentence.create( "I like ${name} and ${this.name}!" ) ;
 		
-		expect( sentence.toStringCtx( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
+		expect( sentence.toStringKFG( { name: 'apples' } , { name: 'strawberries' } ) ).to.be( "I like apples and strawberries!" ) ;
 	} ) ;
 } ) ;
 
