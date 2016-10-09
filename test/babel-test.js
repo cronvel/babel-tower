@@ -191,17 +191,6 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , {g:'f'} ) ).to.be( "J'aime la jument!" ) ;
 	} ) ;
 	
-	it( "should format things using the 'ng?' or 'altng' notation" , function() {
-		var babel = Babel.create() ;
-		
-		expect( babel.solve( "J'aime $1[ng?(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
-		expect( babel.solve( "J'aime $1[altng:(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:3,g:'f'} ) ).to.be( "J'aime les juments!" ) ;
-		
-		expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , 3 ) ).to.be( "J'aime le cheval!" ) ;
-		expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , 1 ) ).to.be( "J'aime le cheval!" ) ;
-		expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , {g:'f'} ) ).to.be( "J'aime la jument!" ) ;
-	} ) ;
-	
 	it( "should format things using the 'n0?' or 'altn0' notation" , function() {
 		var babel = Babel.create() ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 0 ) ).to.be( "There is no horse..." ) ;
@@ -541,7 +530,7 @@ describe( "'en'/'fr' core langpack features" , function() {
 				sentence: {
 					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
-					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gl?(le beau|le bel)|(la belle)] $1." ,
+					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gel?(le beau|le bel)|(la belle)] $1." ,
 					"I want a $1.": "Je veux $1[artIndef] $1."
 				} ,
 				word: {
@@ -574,7 +563,7 @@ describe( "'en'/'fr' core langpack features" , function() {
 		
 		expect( babelFr.solve( "I want a $1." , "tree" ) ).to.be( "Je veux un arbre." ) ;
 		expect( babelFr.solve( "I want a $1." , "flower" ) ).to.be( "Je veux une fleur." ) ;
-		expect( babelFr.solve( "I want a $1." , { t:"flower",n:"many"} ) ).to.be( "Je veux des fleurs." ) ;
+		expect( babelFr.solve( "I want a $1." , { t: "flower" , n: "many" } ) ).to.be( "Je veux des fleurs." ) ;
 	} ) ;
 } ) ;
 
