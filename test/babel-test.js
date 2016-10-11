@@ -49,12 +49,12 @@ var expect = require( 'expect.js' ) ;
 describe( "Element solver" , function() {
 	
 	var babel = Babel.create() ;
-	var word ;
+	var element ;
 	
 	babel.extend( {
 		fr: {
 			gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-			word: {
+			element: {
 				apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 				horse: { altng: [ [ 'cheval' , 'jument' ] , [ 'chevaux' , 'juments' ] ] } ,
 			}
@@ -63,19 +63,19 @@ describe( "Element solver" , function() {
 	
 	var babelFr = babel.use( 'fr' ) ;
 	
-	it( "creating a word from a string should create a translatable Element object" , function() {
+	it( "creating an element from a string should create a translatable Element object" , function() {
 		expect( Element.create( "horse" ) ).to.eql( { t: "horse" } ) ;
 	} ) ;
 	
-	it( "creating a word from a number should create a Element object with a 'n' (number) property" , function() {
+	it( "creating an element from a number should create a Element object with a 'n' (number) property" , function() {
 		expect( Element.create( 3 ) ).to.eql( { n: 3 } ) ;
 	} ) ;
 	
-	it( "a Element created from a string should resolve to itself when the word is not in the dictionary" , function() {
+	it( "a Element created from a string should resolve to itself when the element is not in the dictionary" , function() {
 		expect( Element.create( "horse" ).solve( babel ) ).to.be( "horse" ) ;
 	} ) ;
 	
-	it( "a Element created from a string should resolve to the word existing in the dictionary" , function() {
+	it( "a Element created from a string should resolve to the element existing in the dictionary" , function() {
 		expect( Element.create( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
 	} ) ;
 	
@@ -119,7 +119,7 @@ describe( "Element solver" , function() {
 		expect( Element.create( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it( "a Element created with a 'n' and/or 'g' and a 't' should extend the word existing in the dictionary with 'n' and resolve to the appropriate alternative" , function() {
+	it( "a Element created with a 'n' and/or 'g' and a 't' should extend the element existing in the dictionary with 'n' and resolve to the appropriate alternative" , function() {
 		expect( Element.create( { n: 0 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 		expect( Element.create( { n: 1 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 		expect( Element.create( { n: 2 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
@@ -375,7 +375,7 @@ describe( "Language pack and functions" , function() {
 					"Give me an $1!" : "Donne-moi $1[g?un|une] $1!" ,
 					"I like $1[n:many]!" : "J'aime les $1[n:many]!"
 				} ,
-				word: {
+				element: {
 					apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 					horse: { g:'m', altn: [ 'cheval' , 'chevaux' ] } ,
 				}
@@ -427,7 +427,7 @@ describe( "Advanced feature: enumeration" , function() {
 					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." :
 						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$#[ng?(un|une)|(des)] $#|, $#[ng?(un|une)|(des)] $#| et $#[ng?(un|une)|(des)] $#]."
 				} ,
-				word: {
+				element: {
 					"pear": { altn: [ 'poire' , 'poires' ] , g: 'f' } ,
 					"banana": { altn: [ 'banane' , 'bananes' ] , g: 'f' } ,
 					"strawberry": { altn: [ 'fraise' , 'fraises' ] , g: 'f' }
@@ -468,7 +468,7 @@ describe( "Post-filters" , function() {
 					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
 					"$1[n:many//uc1]: I like that!": "$1[n:many//uc1]: j'adore ça!"
 				} ,
-				word: {
+				element: {
 					apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 					pear: { g:'f', altn: [ 'poire' , 'poires' ] }
 				}
@@ -533,7 +533,7 @@ describe( "'en'/'fr' core langpack features" , function() {
 					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gel?(le beau|le bel)|(la belle)] $1." ,
 					"I want a $1.": "Je veux $1[artIndef] $1."
 				} ,
-				word: {
+				element: {
 					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
 					oak: { altn: [ "chêne" , "chênes" ] , g: 'm' } ,
 					flower: { altn: [ "fleur" , "fleurs" ] , g: 'f' } ,
