@@ -21,11 +21,23 @@ expect( Element.parse( "horse[altng:(cheval|jument)|(chevaux|juments)]" ) ).to.e
 	t: "horse" ,
 	altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
 } ) ;
+expect( Element.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
+	t: "horse" ,
+	altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
+} ) ;
 expect( Element.parse( "horse[altn:cheval|chevaux]" ) ).to.eql( {
 	t: "horse" ,
 	altn: [ "cheval" , "chevaux" ]
 } ) ;
+expect( Element.parse( "horse[n?cheval|chevaux]" ) ).to.eql( {
+	t: "horse" ,
+	altn: [ "cheval" , "chevaux" ]
+} ) ;
 expect( Element.parse( "horse[altg:cheval|jument]" ) ).to.eql( {
+	t: "horse" ,
+	altg: [ "cheval" , "jument" ]
+} ) ;
+expect( Element.parse( "horse[g?cheval|jument]" ) ).to.eql( {
 	t: "horse" ,
 	altg: [ "cheval" , "jument" ]
 } ) ;
@@ -190,6 +202,30 @@ expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 0
 expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 1 ) ).to.be( "There is an horse..." ) ;
 expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 2 ) ).to.be( "There are many horses..." ) ;
 expect( babel.solve( "There $1[n?is|are] $1[altn0:no|an|many] horse$1[n?|s]..." , 2 ) ).to.be( "There are many horses..." ) ;
+```
+
+should format things using the 'n:' notation.
+
+```js
+var babel = Babel.create() ;
+expect( babel.solve( "There is an $1[n:1]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
+
+var element = Element.create( { altn: [ "horse" , "horses" ] } ) ;
+expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
+
+element = Element.parse( "[altn:horse|horses]" ) ;
+expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
+
+element = Element.parse( "horse[altn:horse|horses]" ) ;
+expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
 ```
 
 should format things using the 'n0g?' or 'altn0g' notation.
