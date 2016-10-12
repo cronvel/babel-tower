@@ -5,7 +5,7 @@
 i18n.
  
 # TOC
-   - [Element solver](#element-solver)
+   - [Element parser and solver](#element-parser-and-solver)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Sentence instances](#sentence-instances)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
@@ -16,8 +16,27 @@ i18n.
    - [String-kit's format() interoperability](#string-kits-format-interoperability)
 <a name=""></a>
  
-<a name="element-solver"></a>
-# Element solver
+<a name="element-parser-and-solver"></a>
+# Element parser and solver
+should parse an element.
+
+```js
+expect( Element.parse( "horse" ) ).to.eql( { t: "horse" } ) ;
+expect( Element.parse( "[t:horse]" ) ).to.eql( { t: "horse" } ) ;
+expect( Element.parse( "horse[altng:(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
+	t: "horse" ,
+	altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
+} ) ;
+expect( Element.parse( "horse[altn:cheval|chevaux]" ) ).to.eql( {
+	t: "horse" ,
+	altn: [ "cheval" , "chevaux" ]
+} ) ;
+expect( Element.parse( "horse[altg:cheval|jument]" ) ).to.eql( {
+	t: "horse" ,
+	altg: [ "cheval" , "jument" ]
+} ) ;
+```
+
 creating an element from a string should create a translatable Element object.
 
 ```js

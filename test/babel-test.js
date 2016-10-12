@@ -46,7 +46,7 @@ var expect = require( 'expect.js' ) ;
 
 
 
-describe( "Element solver" , function() {
+describe( "Element parser and solver" , function() {
 	
 	var babel = Babel.create() ;
 	var element ;
@@ -62,6 +62,23 @@ describe( "Element solver" , function() {
 	} ) ;
 	
 	var babelFr = babel.use( 'fr' ) ;
+	
+	it( "should parse an element" , function() {
+		expect( Element.parse( "horse" ) ).to.eql( { t: "horse" } ) ;
+		expect( Element.parse( "[t:horse]" ) ).to.eql( { t: "horse" } ) ;
+		expect( Element.parse( "horse[altng:(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
+			t: "horse" ,
+			altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
+		} ) ;
+		expect( Element.parse( "horse[altn:cheval|chevaux]" ) ).to.eql( {
+			t: "horse" ,
+			altn: [ "cheval" , "chevaux" ]
+		} ) ;
+		expect( Element.parse( "horse[altg:cheval|jument]" ) ).to.eql( {
+			t: "horse" ,
+			altg: [ "cheval" , "jument" ]
+		} ) ;
+	} ) ;
 	
 	it( "creating an element from a string should create a translatable Element object" , function() {
 		expect( Element.create( "horse" ) ).to.eql( { t: "horse" } ) ;
