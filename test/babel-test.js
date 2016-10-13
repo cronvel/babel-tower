@@ -54,7 +54,7 @@ describe( "Element parser and solver" , function() {
 	babel.extend( {
 		fr: {
 			gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-			element: {
+			elements: {
 				apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 				horse: { altng: [ [ 'cheval' , 'jument' ] , [ 'chevaux' , 'juments' ] ] } ,
 			}
@@ -316,7 +316,7 @@ describe( "Basic usage with language pack" , function() {
 		// Load a pseudo DB
 		babel.extend( {
 			fr: {
-				sentence: {
+				sentences: {
 					"Give me $1 apple$1[n?|s]!" : "Donne-moi $1 pomme$1[n?|s]!"
 				}
 			}
@@ -363,7 +363,7 @@ describe( "Language pack and functions" , function() {
 		// Load a pseudo DB
 		babel.extend( {
 			none: {
-				fn: {
+				functions: {
 					nw: function( arg ) {
 						arg.s = n2w.toWords( arg.n ) ;
 						return arg ;
@@ -372,7 +372,7 @@ describe( "Language pack and functions" , function() {
 			} ,
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-				fn: {
+				functions: {
 					nw: function( arg ) {
 						
 						switch ( arg.n )
@@ -387,7 +387,7 @@ describe( "Language pack and functions" , function() {
 						return arg ;
 					}
 				} ,
-				sentence: {
+				sentences: {
 					"Give me $1[nw] apple$1[n?|s]!" : "Donne-moi $1[nw/g:f] pomme$1[n?|s]!" ,
 					"There $1[n?is|are] $1[nw] horse$1[n?|s]!" : "Il y a $1[nw] chev$1[n?al|aux]!"
 				}
@@ -422,11 +422,11 @@ describe( "Language pack and functions" , function() {
 		babel.extend( {
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-				sentence: {
+				sentences: {
 					"Give me an $1!" : "Donne-moi $1[g?un|une] $1!" ,
 					"I like $1[n:many]!" : "J'aime les $1[n:many]!"
 				} ,
-				element: {
+				elements: {
 					apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 					horse: { g:'m', altn: [ 'cheval' , 'chevaux' ] } ,
 				}
@@ -474,11 +474,11 @@ describe( "Advanced feature: enumeration" , function() {
 		babel.extend( {
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-				sentence: {
+				sentences: {
 					"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." :
 						"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$#[ng?(un|une)|(des)] $#|, $#[ng?(un|une)|(des)] $#| et $#[ng?(un|une)|(des)] $#]."
 				} ,
-				element: {
+				elements: {
 					"pear": { altn: [ 'poire' , 'poires' ] , g: 'f' } ,
 					"banana": { altn: [ 'banane' , 'bananes' ] , g: 'f' } ,
 					"strawberry": { altn: [ 'fraise' , 'fraises' ] , g: 'f' }
@@ -515,11 +515,11 @@ describe( "Post-filters" , function() {
 		babel.extend( {
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
-				sentence: {
+				sentences: {
 					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
 					"$1[n:many//uc1]: I like that!": "$1[n:many//uc1]: j'adore ça!"
 				} ,
-				element: {
+				elements: {
 					apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
 					pear: { g:'f', altn: [ 'poire' , 'poires' ] }
 				}
@@ -578,13 +578,13 @@ describe( "'en'/'fr' core langpack features" , function() {
 		
 		babel.extend( {
 			fr: {
-				sentence: {
+				sentences: {
 					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
 					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gel?(le beau|le bel)|(la belle)] $1." ,
 					"I want a $1.": "Je veux $1[artIndef] $1."
 				} ,
-				element: {
+				elements: {
 					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
 					oak: { altn: [ "chêne" , "chênes" ] , g: 'm' } ,
 					flower: { altn: [ "fleur" , "fleurs" ] , g: 'f' } ,
