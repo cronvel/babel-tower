@@ -191,6 +191,24 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $!" , o ) ).to.be( "Give me ooo!" ) ;
 	} ) ;
 	
+	it( "single $ behaviour should default to the first argument or to the last used argument+path" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.solve( "Give me $!" , "apples" , "pears" ) ).to.be( "Give me apples!" ) ;
+		expect( babel.solve( "Give me $2!" , "apples" , "pears" ) ).to.be( "Give me pears!" ) ;
+		expect( babel.solve( "Give me $ and $2!" , "apples" , "pears" ) ).to.be( "Give me apples and pears!" ) ;
+		expect( babel.solve( "Give me $2 and $!" , "apples" , "pears" ) ).to.be( "Give me pears and pears!" ) ;
+		
+		var ctx = {
+			fruit1: "apples" ,
+			fruit2: "pears"
+		} ;
+		
+		expect( babel.solve( "Give me ${fruit1} and $!" , ctx ) ).to.be( "Give me apples and apples!" ) ;
+		expect( babel.solve( "Give me ${fruit2} and $!" , ctx ) ).to.be( "Give me pears and pears!" ) ;
+		expect( babel.solve( "Give me ${fruit1}[//uc] and $[//uc1]!" , ctx ) ).to.be( "Give me APPLES and Apples!" ) ;
+	} ) ;
+	
 	it( "should format things accordingly" , function() {
 		var babel = Babel.create() ;
 		
