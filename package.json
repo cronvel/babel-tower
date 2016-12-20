@@ -31,6 +31,13 @@
   "bugs": {
     "url": "https://github.com/cronvel/babel-tower/issues"
   },
+  "config": {
+    "tea-time": {
+      "coverDir": [
+        "lib"
+      ]
+    }
+  },
   "copyright": {
     "title": "Babel Tower",
     "years": [
