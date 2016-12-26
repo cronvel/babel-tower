@@ -171,6 +171,21 @@ describe( "Element parser and solver" , function() {
 		
 		expect( Element.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 	} ) ;
+	
+	it( "zzz unit of measurements" , function() {
+		var e = Element.parse( "[n:1/u:(1000|$# km)|(1|$# m)/uc:$> and $</us:N+]" ) ;
+		
+		expect( e ).to.eql( {
+			n: "1" ,
+			u: [ [ "1000" , "$# km" ] , [ "1" , "$# m" ] ] ,
+			uc: "$> and $<" ,
+			us: "N+"
+		} ) ;
+		
+		expect( e.solve( babel ) ).to.be( "" ) ;
+		
+		expect( Element.parse( "[n:1004/u:(1000|$# km)|(1|$# m)/uc:$> and $</us:N+]" ).solve( babel ) ) ;
+	} ) ;
 } ) ;
 
 
