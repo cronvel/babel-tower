@@ -251,6 +251,14 @@ describe( "zzz Units of measurement" , function() {
 		expect( Element.parse( "[n:0.2/u:(1000|$#km)|(1|$#m)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
 			.to.be( '0.2m' ) ;
 	} ) ;
+	
+	it.next( "using recursive solver" , function() {
+		expect( Element.parse( "[n:1/u:(63360|$# $#[n?mile|miles])|(36|$# $#[n?yard|yards])|(12|$# $#[n?foot|feet])|(1|$# $#[n?inch|inches])/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+			.to.be( '1 inch' ) ;
+		
+		expect( Element.parse( "[n:2/u:(63360|$# $#[n?mile|miles])|(36|$# $#[n?yard|yards])|(12|$# $#[n?foot|feet])|(1|$# $#[n?inch|inches])/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+			.to.be( '2 inches' ) ;
+	} ) ;
 } ) ;
 
 
