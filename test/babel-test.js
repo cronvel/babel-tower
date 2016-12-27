@@ -172,19 +172,56 @@ describe( "Element parser and solver" , function() {
 		expect( Element.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it( "zzz unit of measurements" , function() {
-		var e = Element.parse( "[n:1/u:(1000|$# km)|(1|$# m)/uc:$> and $</us:N+]" ) ;
+	it( "zzz basic tests" , function() {
+		var e = Element.parse( "[n:1/u:(1000|$#km)|(1|$#m)/uenum:0|$#|, $#| and $#/um:N+]" ) ;
 		
 		expect( e ).to.eql( {
 			n: "1" ,
-			u: [ [ "1000" , "$# km" ] , [ "1" , "$# m" ] ] ,
-			uc: "$> and $<" ,
-			us: "N+"
+			u: [ [ "1000" , "$#km" ] , [ "1" , "$#m" ] ] ,
+			uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
+			um: "N+"
 		} ) ;
+	} ) ;
+} ) ;
+
+
+
+describe( "zzz Units of measurement" , function() {
+	
+	var babel = Babel.create() ;
+	
+	it( "using an enumeration of natural positive integer units" , function() {
+		expect( Element.parse( "[n:1004/u:(1000|$#km)|(1|$#m)/um:N+]" ).solve( babel ) )
+			.to.be( '1km 4m' ) ;
 		
-		expect( e.solve( babel ) ).to.be( "" ) ;
-		
-		expect( Element.parse( "[n:1004/u:(1000|$# km)|(1|$# m)/uc:$> and $</us:N+]" ).solve( babel ) ) ;
+		expect( Element.parse( "[n:1004/u:(1000|$#km)|(1|$#m)/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+			.to.be( '1km and 4m' ) ;
+	} ) ;
+	
+	it( "using a real of the closest unit" , function() {
+		expect( Element.parse( "[n:1200/u:(1000|$#km)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '1.2km' ) ;
+		expect( Element.parse( "[n:1200/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '1.2km' ) ;
+		expect( Element.parse( "[n:800/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '0.8km' ) ;
+		expect( Element.parse( "[n:500/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '0.5km' ) ;
+		expect( Element.parse( "[n:400/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '4hm' ) ;
+	} ) ;
+	
+	it( "using a real of the closest unit" , function() {
+		expect( Element.parse( "[n:1200/u:(1000|$#km)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '1.2km' ) ;
+		expect( Element.parse( "[n:1200/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '1.2km' ) ;
+		expect( Element.parse( "[n:800/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '0.8km' ) ;
+		expect( Element.parse( "[n:500/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '0.5km' ) ;
+		expect( Element.parse( "[n:400/u:(1000|$#km)|(100|$#hm)|(1|$#m)/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+			.to.be( '4hm' ) ;
 	} ) ;
 } ) ;
 
