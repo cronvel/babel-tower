@@ -6,6 +6,7 @@ i18n.
  
 # TOC
    - [Element parser and solver](#element-parser-and-solver)
+   - [Units of measurement](#units-of-measurement)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Sentence instances](#sentence-instances)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
@@ -143,6 +144,96 @@ expect( Element.create( { g: 'n' , t: "horse" } ).solve( babelFr ) ).to.be( "che
 expect( Element.create( { g: 'h' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 
 expect( Element.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+```
+
+parse units.
+
+```js
+expect( Element.parse( "[n:1/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
+	n: "1" ,
+	uv: [ "1000" , "1" ] ,
+	uf: [ "$#km" , "$#m" ] ,
+	uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
+	um: "N+"
+} ) ;
+
+expect( Element.parse( "[n:30/uv:12|1/uf:$# $#[n?foot|feet]|$# $#[n?inch|inches]/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
+	n: "30" ,
+	uv: [ "12" , "1" ] ,
+	uf: [ "$# $#[n?foot|feet]" , "$# $#[n?inch|inches]" ] ,
+	uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
+	um: "N+"
+} ) ;
+```
+
+<a name="units-of-measurement"></a>
+# Units of measurement
+using an enumeration of natural positive integer units.
+
+```js
+expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/um:N+]" ).solve( babel ) )
+	.to.be( '1km 4m' ) ;
+expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '1km and 4m' ) ;
+expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '1 inch' ) ;
+expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '3 inches' ) ;
+expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '1 foot' ) ;
+expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '2 feet' ) ;
+expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '2 feet and 1 inch' ) ;
+expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '2 feet and 3 inches' ) ;
+expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '1 yard, 1 foot and 2 inches' ) ;
+// 10km
+expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+	.to.be( '6 miles, 376 yards and 4 inches' ) ;
+```
+
+using a real of the closest unit.
+
+```js
+expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '1.2km' ) ;
+expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '1.2km' ) ;
+expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '0.8km' ) ;
+expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '0.6km' ) ;
+expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '5hm' ) ;
+expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '0.6km' ) ;
+expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '500m' ) ;
+expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+	.to.be( '0.2m' ) ;
+```
+
+using a real >= 1 (when possible) of the closest unit.
+
+```js
+expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '1.2km' ) ;
+expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '1.2km' ) ;
+expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '8hm' ) ;
+expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '6hm' ) ;
+expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '5hm' ) ;
+expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '600m' ) ;
+expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '500m' ) ;
+expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+	.to.be( '0.2m' ) ;
 ```
 
 <a name="basic-usage-without-language-pack"></a>
