@@ -12,6 +12,7 @@ i18n.
    - [Basic usage with language pack](#basic-usage-with-language-pack)
    - [Language pack and functions](#language-pack-and-functions)
    - [Advanced feature: enumeration](#advanced-feature-enumeration)
+   - [Advanced feature: reference operator](#advanced-feature-reference-operator)
    - [Post-filters](#post-filters)
    - ['en'/'fr' core langpack features](#enfr-core-langpack-features)
    - [String-kit's format() interoperability](#string-kits-format-interoperability)
@@ -606,6 +607,33 @@ expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be
 
 expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
 expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
+```
+
+<a name="advanced-feature-reference-operator"></a>
+# Advanced feature: reference operator
+using reference operator that point to an element should extend the current element/part.
+
+```js
+var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+
+expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
+
+expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+expect( babel.solve( "${length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+expect( babel.solve( "$1{length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+expect( babel.solve( "$1{length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+
+expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+```
+
+using reference operator stacked with other operators.
+
+```js
+var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+
+expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
+expect( babel.solve( "${length}[$:lengthUnit/uf:$# km|$# m/uenum:0|$#|, $#| and $#]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
 ```
 
 <a name="post-filters"></a>

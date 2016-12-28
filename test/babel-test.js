@@ -610,6 +610,34 @@ describe( "Advanced feature: enumeration" , function() {
 
 
 
+describe( "Advanced feature: reference operator" , function() {
+	
+	var babel = Babel.create() ;
+	
+	it( "using reference operator that point to an element should extend the current element/part" , function() {
+		var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+		
+		expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
+		
+		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "${length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "$1{length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "$1{length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		
+		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+	} ) ;
+	
+	it( "using reference operator stacked with other operators" , function() {
+		var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+		
+		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+		expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
+		expect( babel.solve( "${length}[$:lengthUnit/uf:$# km|$# m/uenum:0|$#|, $#| and $#]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
+	} ) ;
+} ) ;
+
+
+
 describe( "Post-filters" , function() {
 	
 	it( "should apply post-filters 'uc1' (upper-case first letter)" , function() {
