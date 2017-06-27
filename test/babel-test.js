@@ -560,6 +560,11 @@ describe( "Advanced feature: enumeration" , function() {
 		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 	} ) ;
 	
+	it( "when a string is given instead of an array, it should be equivalent to an array of the given string" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
+	} ) ;
+	
 	it( "enumeration with variable length" , function() {
 		var babel = Babel.create() ;
 		expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [] ) ).to.be( "I want nothing." ) ;

@@ -558,6 +558,13 @@ var babel = Babel.create() ;
 expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 ```
 
+when a string is given instead of an array, it should be equivalent to an array of the given string.
+
+```js
+var babel = Babel.create() ;
+expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
+```
+
 enumeration with variable length.
 
 ```js
