@@ -711,13 +711,11 @@ expect( babel.solve( "$[//dirname]" , "~/somedir/README.md" ) ).to.be( "~/somedi
 should extract the named variables from the format string.
 
 ```js
-var babel = Babel.create() ;
-
-expect( babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
-expect( babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
-expect( babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
-expect( babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
-expect( babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
+expect( Babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
+expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
+expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
+expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
+expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
 ```
 
 <a name="enfr-core-langpack-features"></a>
