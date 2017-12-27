@@ -8,6 +8,7 @@
    - [Advanced feature: enumeration](#advanced-feature-enumeration)
    - [Advanced feature: reference operator](#advanced-feature-reference-operator)
    - [Post-filters](#post-filters)
+   - [Misc](#misc)
    - ['en'/'fr' core langpack features](#enfr-core-langpack-features)
    - [String-kit's format() interoperability](#string-kits-format-interoperability)
 <a name=""></a>
@@ -697,6 +698,20 @@ expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
 expect( babel.solve( "$[//basename]" , "~/somedir/README.md" ) ).to.be( "README.md" ) ;
 expect( babel.solve( "$[//basenameNoExt]" , "~/somedir/README.md" ) ).to.be( "README" ) ;
 expect( babel.solve( "$[//dirname]" , "~/somedir/README.md" ) ).to.be( "~/somedir" ) ;
+```
+
+<a name="misc"></a>
+# Misc
+should extract the named variables from the format string.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
+expect( babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
+expect( babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
+expect( babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
+expect( babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
 ```
 
 <a name="enfr-core-langpack-features"></a>

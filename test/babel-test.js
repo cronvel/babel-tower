@@ -704,6 +704,22 @@ describe( "Post-filters" , function() {
 
 
 
+describe( "Misc" , function() {
+	
+	it( "should extract the named variables from the format string" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
+		expect( babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
+		expect( babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
+		expect( babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
+		expect( babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
+	} ) ;
+	
+} ) ;
+
+
+
 describe( "'en'/'fr' core langpack features" , function() {
 	
 	it( "testing few features" , function() {
