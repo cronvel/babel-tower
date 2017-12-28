@@ -388,6 +388,40 @@ var data = {
 expect( babel.solve( "Hello ${bob.firstName} ${bob.lastName} and ${alice.firstName} ${alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
 ```
 
+undefined values for missing variable index/path.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "Give me $1 and $3!" , "apples" , "pears" ) ).to.be( "Give me apples and (undefined)!" ) ;
+expect( babel.solve( "Give me $3 and $2!" , "apples" , "pears" ) ).to.be( "Give me (undefined) and pears!" ) ;
+
+var ctx = {
+	fruit: "apples"
+} ;
+
+expect( babel.solve( "Give me ${fruit} and ${excellentFruit}!" , ctx ) ).to.be( "Give me apples and (undefined)!" ) ;
+expect( babel.solve( "Give me ${excellentFruit} and ${fruit}!" , ctx ) ).to.be( "Give me (undefined) and apples!" ) ;
+expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[//uc]!" , ctx ) ).to.be( "Give me Apples and (UNDEFINED)!" ) ;
+```
+
+default values for missing variable index/path.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "Give me $1 and $3[d:strawberries]!" , "apples" , "pears" ) ).to.be( "Give me apples and strawberries!" ) ;
+expect( babel.solve( "Give me $3[default:strawberries] and $2!" , "apples" , "pears" ) ).to.be( "Give me strawberries and pears!" ) ;
+
+var ctx = {
+	fruit: "apples"
+} ;
+
+expect( babel.solve( "Give me ${fruit} and ${excellentFruit}[default:strawberries]!" , ctx ) ).to.be( "Give me apples and strawberries!" ) ;
+expect( babel.solve( "Give me ${excellentFruit}[default:strawberries] and ${fruit}!" , ctx ) ).to.be( "Give me strawberries and apples!" ) ;
+expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberries//uc]!" , ctx ) ).to.be( "Give me Apples and STRAWBERRIES!" ) ;
+```
+
 <a name="sentence-instances"></a>
 # Sentence instances
 Basic sentence.
