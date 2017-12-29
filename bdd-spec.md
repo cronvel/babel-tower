@@ -416,6 +416,15 @@ expect( babel.solve( "Give me ${excellentFruit}[default:strawberries] and ${frui
 expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberries//uc]!" , ctx ) ).to.be( "Give me Apples and STRAWBERRIES!" ) ;
 ```
 
+escape inside bracket.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
+expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
+```
+
 <a name="sentence-instances"></a>
 # Sentence instances
 Basic sentence.
