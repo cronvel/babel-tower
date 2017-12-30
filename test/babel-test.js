@@ -419,12 +419,37 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me ${excellentFruit}[default:strawberries] and ${fruit}!" , ctx ) ).to.be( "Give me strawberries and apples!" ) ;
 		expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberries//uc]!" , ctx ) ).to.be( "Give me Apples and STRAWBERRIES!" ) ;
 	} ) ;
+} ) ;
 	
-	it( "escape inside bracket" , function() {
+
+
+describe( "Escape special character" , function() {
+	
+	it( "escape inside sentence bracket" , function() {
 		var babel = Babel.create() ;
 		
 		expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
 		expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
+	} ) ;
+	
+	it( "escape inside element bracket" , function() {
+		var babel = Babel.create() ;
+		
+		expect( Element.parse( "element[default:pears/n:2]!" ) ).to.eql( {
+			t: "element" ,
+			d: "pears" ,
+			n: 2
+		} ) ;
+		
+		expect( Element.parse( "element[default:pears and\\/or apples]!" ) ).to.eql( {
+			t: "element" ,
+			d: "pears and/or apples"
+		} ) ;
+		
+		expect( Element.parse( "num[altn:one\\|1|two\\|2]" ) ).to.eql( {
+			t: "num" ,
+			altn: [ "one|1" , "two|2" ]
+		} ) ;
 	} ) ;
 	
 	it( "escape of | [ ] ( ) chars" ) ;
