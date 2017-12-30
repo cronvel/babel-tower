@@ -8,6 +8,7 @@ i18n.
    - [Element parser and solver](#element-parser-and-solver)
    - [Units of measurement](#units-of-measurement)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
+   - [Escape special character](#escape-special-character)
    - [Sentence instances](#sentence-instances)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
    - [Language pack and functions](#language-pack-and-functions)
@@ -422,13 +423,37 @@ expect( babel.solve( "Give me ${excellentFruit}[default:strawberries] and ${frui
 expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberries//uc]!" , ctx ) ).to.be( "Give me Apples and STRAWBERRIES!" ) ;
 ```
 
-escape inside bracket.
+<a name="escape-special-character"></a>
+# Escape special character
+escape inside sentence bracket.
 
 ```js
 var babel = Babel.create() ;
 
 expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
 expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
+```
+
+escape inside element bracket.
+
+```js
+var babel = Babel.create() ;
+
+expect( Element.parse( "element[default:pears/n:2]!" ) ).to.eql( {
+	t: "element" ,
+	d: "pears" ,
+	n: 2
+} ) ;
+
+expect( Element.parse( "element[default:pears and\\/or apples]!" ) ).to.eql( {
+	t: "element" ,
+	d: "pears and/or apples"
+} ) ;
+
+expect( Element.parse( "num[altn:one\\|1|two\\|2]" ) ).to.eql( {
+	t: "num" ,
+	altn: [ "one|1" , "two|2" ]
+} ) ;
 ```
 
 <a name="sentence-instances"></a>
