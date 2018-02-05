@@ -453,6 +453,7 @@ describe( "Escape special character" , function() {
 	} ) ;
 	
 	it( "escape of | [ ] ( ) chars" ) ;
+	it( "escape enum" ) ;
 } ) ;
 
 
@@ -752,6 +753,16 @@ describe( "Post-filters" , function() {
 		
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "simple" } ) ).to.be( "echo 'simple'" ) ;
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
+	} ) ;
+	
+	it( "should apply english post-filters" , function() {
+		var babel = Babel.create() ;
+		
+		expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
+		expect( babel.solve( "You take $1[//en:the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
+		expect( babel.solve( "You take $1[//en:a]." , "apple" ) ).to.be( "You take an apple." ) ;
+		expect( babel.solve( "You take $1[//en:a]." , "banana" ) ).to.be( "You take a banana." ) ;
+		expect( babel.solve( "You take $1[//en:a]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
 	} ) ;
 	
 	it( "should apply path post-filters" , function() {

@@ -763,6 +763,18 @@ expect( babel.solve( "echo ${arg//shellarg}" , { arg: "simple" } ) ).to.be( "ech
 expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
 ```
 
+should apply english post-filters.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
+expect( babel.solve( "You take $1[//en:the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
+expect( babel.solve( "You take $1[//en:a]." , "apple" ) ).to.be( "You take an apple." ) ;
+expect( babel.solve( "You take $1[//en:a]." , "banana" ) ).to.be( "You take a banana." ) ;
+expect( babel.solve( "You take $1[//en:a]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
+```
+
 should apply path post-filters.
 
 ```js
