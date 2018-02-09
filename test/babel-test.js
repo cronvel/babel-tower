@@ -35,6 +35,7 @@
 
 var Babel = require( '../lib/Babel.js' ) ;
 var Element = Babel.Element ;
+var Sentence = Babel.Sentence ;
 
 var expect = require( 'expect.js' ) ;
 
@@ -43,6 +44,17 @@ var expect = require( 'expect.js' ) ;
 
 
 			/* Tests */
+
+
+
+describe( "zzz New Sentence object" , function() {
+	
+	it( "should parse a sentence" , function() {
+		expect( Sentence.parse( "" ).parts ).to.eql( [] ) ;
+		expect( Sentence.parse( "horse" ).parts ).to.eql( [ "horse" ] ) ;
+		expect( Sentence.parse( "got some $$ dollars" ).parts ).to.eql( [ "got some $ dollars" ] ) ;
+	} ) ;
+} ) ;
 
 
 
