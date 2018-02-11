@@ -50,6 +50,11 @@ var expect = require( 'expect.js' ) ;
 describe( "zzz New Sentence object" , function() {
 	
 	it( "should parse a sentence" , function() {
+		expect( Sentence.parse( "got some ${path.to.var//uc1/some/filter} dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
+		expect( Sentence.parse( "got some ${path.to.var} dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
+		return ;
+		
+		
 		expect( Sentence.parse( "" ).parts ).to.eql( [] ) ;
 		expect( Sentence.parse( "horse" ).parts ).to.eql( [ "horse" ] ) ;
 		expect( Sentence.parse( "got some $$ dollars" ).parts ).to.eql( [ "got some $ dollars" ] ) ;
