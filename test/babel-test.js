@@ -53,6 +53,9 @@ describe( "zzz New Sentence object" , function() {
 		expect( Sentence.parse( "" ).parts ).to.eql( [] ) ;
 		expect( Sentence.parse( "horse" ).parts ).to.eql( [ "horse" ] ) ;
 		expect( Sentence.parse( "got some $$ dollars" ).parts ).to.eql( [ "got some $ dollars" ] ) ;
+		expect( Sentence.parse( "got some $1 dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: 0 } , " dollars" ] ) ;
+		expect( Sentence.parse( "got some $3 dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: 2 } , " dollars" ] ) ;
+		expect( Sentence.parse( "got some $ dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
 	} ) ;
 } ) ;
 

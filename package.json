@@ -10,6 +10,7 @@
     "test": "test"
   },
   "dependencies": {
+    "kung-fig-ref": "^0.41.9",
     "string-kit": "^0.6.4",
     "tree-kit": "^0.5.26"
   },
