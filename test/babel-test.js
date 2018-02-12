@@ -51,11 +51,19 @@ describe( "zzz New Sentence object" , function() {
 	
 	it( "should parse a sentence" , function() {
 		var ctx = {
-			path: { to: { var: 120 } }
+			path: { to: { var: 120 } } ,
+			player1: { g: 'f' } ,
+			player2: { g: 'm' } ,
+			name: "Bob"
 		} ;
 		
-		expect( Sentence.parse( "got ${path.to.var//uc1/some/filter}[n?dollar|dollars]!" ).solve( ctx ) ).to.be( "got some bob!" ) ;
-		//expect( Sentence.parse( "got some ${path.to.var//uc1/some/filter}[n?dollar|dollars]!" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
+		expect( Sentence.parse( "got ${path.to.var} $[n?dollar|dollars]!" ).solve( ctx ) ).to.be( "got 120 dollars!" ) ;
+		expect( Sentence.parse( "Hello ${player1}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello girls!" ) ;
+		expect( Sentence.parse( "Hello ${player2}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
+		expect( Sentence.parse( "Hello ${player1.g}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello girls!" ) ;
+		expect( Sentence.parse( "Hello ${unknown}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
+		expect( Sentence.parse( "Hello ${name}!" ).solve( ctx ) ).to.be( "Hello Bob!" ) ;
+		expect( Sentence.parse( "Hello ${name}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
 		return ;
 		
 		
