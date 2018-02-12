@@ -50,8 +50,12 @@ var expect = require( 'expect.js' ) ;
 describe( "zzz New Sentence object" , function() {
 	
 	it( "should parse a sentence" , function() {
-		expect( Sentence.parse( "got some ${path.to.var//uc1/some/filter} dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
-		expect( Sentence.parse( "got some ${path.to.var} dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
+		var ctx = {
+			path: { to: { var: 120 } }
+		} ;
+		
+		expect( Sentence.parse( "got ${path.to.var//uc1/some/filter}[n?dollar|dollars]!" ).solve( ctx ) ).to.be( "got some bob!" ) ;
+		//expect( Sentence.parse( "got some ${path.to.var//uc1/some/filter}[n?dollar|dollars]!" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
 		return ;
 		
 		
@@ -440,7 +444,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberries//uc]!" , ctx ) ).to.be( "Give me Apples and STRAWBERRIES!" ) ;
 	} ) ;
 } ) ;
-	
+
 
 
 describe( "Escape special character" , function() {
