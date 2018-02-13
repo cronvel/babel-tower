@@ -12,7 +12,7 @@ i18n.
    - [Sentence instances](#sentence-instances)
    - [Basic usage with language pack](#basic-usage-with-language-pack)
    - [Language pack and functions](#language-pack-and-functions)
-   - [Advanced feature: enumeration](#advanced-feature-enumeration)
+   - [Advanced feature: list and enumeration](#advanced-feature-list-and-enumeration)
    - [Advanced feature: reference operator](#advanced-feature-reference-operator)
    - [Post-filters](#post-filters)
    - [Misc](#misc)
@@ -56,117 +56,97 @@ expect( Element.parse( "horse[g?cheval|jument]" ) ).to.eql( {
 creating an element from a string should create a translatable Element object.
 
 ```js
-expect( Element.create( "horse" ) ).to.eql( { t: "horse" } ) ;
+expect( new Element( "horse" ) ).to.eql( { t: "horse" } ) ;
 ```
 
 creating an element from a number should create a Element object with a 'n' (number) property.
 
 ```js
-expect( Element.create( 3 ) ).to.eql( { n: 3 } ) ;
+expect( new Element( 3 ) ).to.eql( { n: 3 } ) ;
 ```
 
 a Element created from a string should resolve to itself when the element is not in the dictionary.
 
 ```js
-expect( Element.create( "horse" ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Element( "horse" ).solve( babel ) ).to.be( "horse" ) ;
 ```
 
 a Element created from a string should resolve to the element existing in the dictionary.
 
 ```js
-expect( Element.create( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
+expect( new Element( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
 ```
 
 a Element created with a 'n' and a 'altn' should resolve to the appropriate alternative.
 
 ```js
-expect( Element.create( { n: 0 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
-expect( Element.create( { n: 1 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
-expect( Element.create( { n: 2 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
-expect( Element.create( { n: 3 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+expect( new Element( { n: 0 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Element( { n: 1 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Element( { n: 2 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+expect( new Element( { n: 3 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
 
-expect( Element.create( { altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Element( { altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 ```
 
 a Element created with a 'g' and a 'altg' should resolve to the appropriate alternative.
 
 ```js
-expect( Element.create( { g: 'm' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { g: 'f' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( Element.create( { g: 'n' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { g: 'h' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'm' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'f' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Element( { g: 'n' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'h' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 
-expect( Element.create( { altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 ```
 
 a Element created with a 'n' and/or a 'g' and a 'altng' should resolve to the appropriate alternative.
 
 ```js
-expect( Element.create( { n: 0 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 1 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 2 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( Element.create( { n: 3 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 0 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 1 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 2 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 3 , g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
-expect( Element.create( { n: 0 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( Element.create( { n: 1 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( Element.create( { n: 2 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
-expect( Element.create( { n: 3 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+expect( new Element( { n: 0 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Element( { n: 1 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Element( { n: 2 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+expect( new Element( { n: 3 , g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
 
-expect( Element.create( { n: 0 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 1 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 2 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( Element.create( { n: 3 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 0 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 1 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 2 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 3 , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
-expect( Element.create( { g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( Element.create( { g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Element( { g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
 
-expect( Element.create( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Element( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 ```
 
 a Element created with a 'n' and/or 'g' and a 't' should extend the element existing in the dictionary with 'n' and resolve to the appropriate alternative.
 
 ```js
-expect( Element.create( { n: 0 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 1 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 2 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
-expect( Element.create( { n: 3 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 0 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 1 , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 2 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 3 , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
 
-expect( Element.create( { n: 0 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 1 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { n: 2 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
-expect( Element.create( { n: 3 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 0 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 1 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { n: 2 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Element( { n: 3 , g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
 
-expect( Element.create( { n: 0 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( Element.create( { n: 1 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( Element.create( { n: 2 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
-expect( Element.create( { n: 3 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+expect( new Element( { n: 0 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Element( { n: 1 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Element( { n: 2 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+expect( new Element( { n: 3 , g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
 
-expect( Element.create( { g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( Element.create( { g: 'n' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( Element.create( { g: 'h' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'm' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'f' , t: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Element( { g: 'n' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Element( { g: 'h' , t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 
-expect( Element.create( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-```
-
-parse units.
-
-```js
-expect( Element.parse( "[n:1/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
-	n: "1" ,
-	uv: [ "1000" , "1" ] ,
-	uf: [ "$#km" , "$#m" ] ,
-	uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
-	um: "N+"
-} ) ;
-
-expect( Element.parse( "[n:30/uv:12|1/uf:$# $#[n?foot|feet]|$# $#[n?inch|inches]/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
-	n: "30" ,
-	uv: [ "12" , "1" ] ,
-	uf: [ "$# $#[n?foot|feet]" , "$# $#[n?inch|inches]" ] ,
-	uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
-	um: "N+"
-} ) ;
+expect( new Element( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 ```
 
 <a name="units-of-measurement"></a>
@@ -174,68 +154,68 @@ expect( Element.parse( "[n:30/uv:12|1/uf:$# $#[n?foot|feet]|$# $#[n?inch|inches]
 using an enumeration of natural positive integer units.
 
 ```js
-expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
 	.to.be( '1km 4m' ) ;
-expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1km and 4m' ) ;
-expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 inch' ) ;
-expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '3 inches' ) ;
-expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 foot' ) ;
-expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet' ) ;
-expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet and 1 inch' ) ;
-expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet and 3 inches' ) ;
-expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 yard, 1 foot and 2 inches' ) ;
 // 10km
-expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '6 miles, 376 yards and 4 inches' ) ;
 ```
 
 using a real of the closest unit.
 
 ```js
-expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.8km' ) ;
-expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.6km' ) ;
-expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '5hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.6km' ) ;
-expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '500m' ) ;
-expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.2m' ) ;
 ```
 
 using a real >= 1 (when possible) of the closest unit.
 
 ```js
-expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '8hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '6hm' ) ;
-expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '5hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '600m' ) ;
-expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '500m' ) ;
-expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '0.2m' ) ;
 ```
 
@@ -247,16 +227,6 @@ should format $$ into $.
 var babel = Babel.create() ;
 
 expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
-```
-
-should use .toString() on arguments.
-
-```js
-var babel = Babel.create() ;
-var o = {} ;
-o.toString = function() { return "ooo" ; } ;
-
-expect( babel.solve( "Give me $!" , o ) ).to.be( "Give me ooo!" ) ;
 ```
 
 single $ behaviour should default to the first argument or to the last used argument+path.
@@ -332,7 +302,7 @@ expect( babel.solve( "There is an $1[n:1]..." , { altn: [ "horse" , "horses" ] }
 expect( babel.solve( "There are $1[n:2]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 expect( babel.solve( "There are $1[n:many]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 
-var element = Element.create( { altn: [ "horse" , "horses" ] } ) ;
+var element = new Element( { altn: [ "horse" , "horses" ] } ) ;
 expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
 expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
 expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
@@ -461,7 +431,7 @@ expect( Element.parse( "num[altn:one\\|1|two\\|2]" ) ).to.eql( {
 Basic sentence.
 
 ```js
-var sentence = Babel.Sentence.create( "Give me $1 apple$1[altn:|s]!" ) ;
+var sentence = new Sentence( "Give me $1 apple$1[altn:|s]!" ) ;
 
 expect( sentence.toString( 0 ) ).to.be( "Give me 0 apple!" ) ;
 expect( sentence.toString( 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -472,7 +442,7 @@ expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 .toStringKFG().
 
 ```js
-var sentence = Babel.Sentence.create( "I like ${name}!" ) ;
+var sentence = new Sentence( "I like ${name}!" ) ;
 
 expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
 ```
@@ -611,15 +581,8 @@ expect( babel.solve( "I like $1[n:many]!" , { altn: [ "horse" , "horses" ] } ) )
 expect( babelFr.solve( "I like $1[n:many]!" , "horse" ) ).to.be( "J'aime les chevaux!" ) ;
 ```
 
-<a name="advanced-feature-enumeration"></a>
-# Advanced feature: enumeration
-context object should be used as '$#'.
-
-```js
-var babel = Babel.create() ;
-expect( babel.solveArray( "I want $#." , [] , "you" ) ).to.be( "I want you." ) ;
-```
-
+<a name="advanced-feature-list-and-enumeration"></a>
+# Advanced feature: list and enumeration
 basic enumeration with no rules should simply join with a space.
 
 ```js
@@ -632,17 +595,34 @@ when a string is given instead of an array, it should be equivalent to an array 
 ```js
 var babel = Babel.create() ;
 expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
+expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 ```
 
 enumeration with variable length.
 
 ```js
 var babel = Babel.create() ;
-expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [] ) ).to.be( "I want nothing." ) ;
-expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
-expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
-expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
-expect( babel.solve( "I want $1[enum:nothing|$#|, $#| and $#]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" ] ) ).to.be( "I want apples, pears and oranges." ) ;
+expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
+```
+
+the array length should be used as n.
+
+```js
+var babel = Babel.create() ;
+
+expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [] ) ).to.be( "I want nothing." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [ "apple" ] ) ).to.be( "I want something." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [ "apple" , "pear" ] ) ).to.be( "I want two things." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want many things." ) ;
+
+expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [] ) ).to.be( "I want nothing." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" ] ) ).to.be( "I want something: a pear." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" , "banana" ] ) ).to.be( "I want two things: a pear and a banana." ) ;
+expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "I want many things: a pear, a banana and a strawberry." ) ;
 ```
 
 enumeration with variable length, translation and operators in enumeration.
@@ -658,8 +638,8 @@ babel.extend( {
 	fr: {
 		gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 		sentences: {
-			"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." :
-				"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$#[ng?(un|une)|(des)] $#|, $#[ng?(un|une)|(des)] $#| et $#[ng?(un|une)|(des)] $#]."
+			"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." :
+				"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$[ng?(un|une)|(des)] $|, $[ng?(un|une)|(des)] $| et $[ng?(un|une)|(des)] $]."
 		} ,
 		elements: {
 			"pear": { altn: [ 'poire' , 'poires' ] , g: 'f' } ,
@@ -669,7 +649,7 @@ babel.extend( {
 	}
 } ) ;
 
-var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $#|, a $#| and a $#]." ;
+var sentence = "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." ;
 
 expect( babel.solve( sentence , [] ) ).to.be( "I want nothing." ) ;
 expect( babel.solve( sentence , [ "pear" ] ) ).to.be( "I want something: a pear." ) ;
@@ -681,8 +661,8 @@ expect( babelFr.solve( sentence , [ "pear" ] ) ).to.be( "Je veux quelque chose: 
 expect( babelFr.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "Je veux deux choses: une poire et une fraise." ) ;
 expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
 
-expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
-expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
+expect( babelFr.solve( sentence , [ { t:"pear" , n:3 } ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
+expect( babelFr.solve( sentence , [ { t:"pear" , n:'many' } , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
 ```
 
 <a name="advanced-feature-reference-operator"></a>
@@ -690,7 +670,7 @@ expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be(
 using reference operator that point to an element should extend the current element/part.
 
 ```js
-var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 
 expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
 
@@ -705,11 +685,11 @@ expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e 
 using reference operator stacked with other operators.
 
 ```js
-var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 
 expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
 expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
-expect( babel.solve( "${length}[$:lengthUnit/uf:$# km|$# m/uenum:0|$#|, $#| and $#]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
+expect( babel.solve( "${length}[$:lengthUnit/uf:$ km|$ m/uenum:0|$|, $| and $]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
 ```
 
 <a name="post-filters"></a>
@@ -796,7 +776,7 @@ should extract the named variables from the format string.
 expect( Babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
 expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
 expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
-expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
+expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $ and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
 expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
 expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.eql( [ 'first' , 'second' ] ) ;
 ```
@@ -818,8 +798,8 @@ babel.extend( {
 		sentences: {
 			"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 			"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
-			"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gel?(le beau|le bel)|(la belle)] $1." ,
-			"I want a $1.": "Je veux $1[artIndef] $1."
+			"$1[//uc1], beautiful $1.": "$1[artDef//uc1]$1, $1[gel:(le beau|le bel)|(la belle)]$1." ,
+			"I want a $1.": "Je veux $1[artIndef]$1."
 		} ,
 		elements: {
 			tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
