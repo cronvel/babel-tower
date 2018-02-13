@@ -26,9 +26,6 @@
 
 
 
-/* jshint unused:false */
-/* global describe, it, before, after */
-
 "use strict" ;
 
 
@@ -44,41 +41,6 @@ var expect = require( 'expect.js' ) ;
 
 
 			/* Tests */
-
-
-
-describe( "zzz New Sentence object" , function() {
-	
-	it( "should parse a sentence" , function() {
-		var babel = Babel.create() ;
-		
-		var ctx = {
-			path: { to: { var: 120 } } ,
-			player1: { g: 'f' } ,
-			player2: { g: 'm' } ,
-			name: "Bob"
-		} ;
-		
-		expect( babel.format( "got ${path.to.var} $[n?dollar|dollars]!" , ctx ) ).to.be( "got 120 dollars!" ) ;
-		
-		expect( Sentence.parse( "got ${path.to.var} $[n?dollar|dollars]!" ).solve( ctx ) ).to.be( "got 120 dollars!" ) ;
-		expect( Sentence.parse( "Hello ${player1}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello girls!" ) ;
-		expect( Sentence.parse( "Hello ${player2}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
-		expect( Sentence.parse( "Hello ${player1.g}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello girls!" ) ;
-		expect( Sentence.parse( "Hello ${unknown}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
-		expect( Sentence.parse( "Hello ${name}!" ).solve( ctx ) ).to.be( "Hello Bob!" ) ;
-		expect( Sentence.parse( "Hello ${name}[g?guys|girls]!" ).solve( ctx ) ).to.be( "Hello guys!" ) ;
-		return ;
-		
-		
-		expect( Sentence.parse( "" ).parts ).to.eql( [] ) ;
-		expect( Sentence.parse( "horse" ).parts ).to.eql( [ "horse" ] ) ;
-		expect( Sentence.parse( "got some $$ dollars" ).parts ).to.eql( [ "got some $ dollars" ] ) ;
-		expect( Sentence.parse( "got some $1 dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: 0 } , " dollars" ] ) ;
-		expect( Sentence.parse( "got some $3 dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: 2 } , " dollars" ] ) ;
-		expect( Sentence.parse( "got some $ dollars" ).parts ).to.eql( [ "got some " , { type: 'tvar' , index: null } , " dollars" ] ) ;
-	} ) ;
-} ) ;
 
 
 
@@ -208,20 +170,20 @@ describe( "Element parser and solver" , function() {
 		expect( new Element( { t: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it( "parse units" , function() {
-		expect( Element.parse( "[n:1/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
+	it.skip( "parse units" , function() {
+		expect( Element.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ).to.eql( {
 			n: "1" ,
-			uv: [ "1000" , "1" ] ,
-			uf: [ "$#km" , "$#m" ] ,
-			uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
+			uv: [ 1000 , 1 ] ,
+			uf: [ "$km" , "$m" ] ,
+			uenum: [ "0" , "$" , ", $" , " and $" ] ,
 			um: "N+"
 		} ) ;
 		
-		expect( Element.parse( "[n:30/uv:12|1/uf:$# $#[n?foot|feet]|$# $#[n?inch|inches]/uenum:0|$#|, $#| and $#/um:N+]" ) ).to.eql( {
+		expect( Element.parse( "[n:30/uv:12|1/uf:$ $[n?foot|feet]|$ $[n?inch|inches]/uenum:0|$|, $| and $/um:N+]" ) ).to.eql( {
 			n: "30" ,
-			uv: [ "12" , "1" ] ,
-			uf: [ "$# $#[n?foot|feet]" , "$# $#[n?inch|inches]" ] ,
-			uenum: [ "0" , "$#" , ", $#" , " and $#" ] ,
+			uv: [ 12 , 1 ] ,
+			uf: [ "$ $[n?foot|feet]" , "$ $[n?inch|inches]" ] ,
+			uenum: [ "0" , "$" , ", $" , " and $" ] ,
 			um: "N+"
 		} ) ;
 	} ) ;
@@ -234,64 +196,64 @@ describe( "Units of measurement" , function() {
 	var babel = Babel.create() ;
 	
 	it( "using an enumeration of natural positive integer units" , function() {
-		expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
 			.to.be( '1km 4m' ) ;
-		expect( Element.parse( "[n:1004/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '1km and 4m' ) ;
-		expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '1 inch' ) ;
-		expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '3 inches' ) ;
-		expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '1 foot' ) ;
-		expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '2 feet' ) ;
-		expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '2 feet and 1 inch' ) ;
-		expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '2 feet and 3 inches' ) ;
-		expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '1 yard, 1 foot and 2 inches' ) ;
 		// 10km
-		expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$# mile$#[n?|s]|$# yard$#[n?|s]|$# $#[n?foot|feet]|$# inch$#[n?|es]/uenum:0|$#|, $#| and $#/um:N+]" ).solve( babel ) )
+		expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 			.to.be( '6 miles, 376 yards and 4 inches' ) ;
 	} ) ;
 	
 	it( "using a real of the closest unit" , function() {
-		expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
-		expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
-		expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '0.8km' ) ;
-		expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '0.6km' ) ;
-		expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '5hm' ) ;
-		expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '0.6km' ) ;
-		expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '500m' ) ;
-		expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R]" ).solve( babel ) )
+		expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '0.2m' ) ;
 	} ) ;
 	
 	it( "using a real >= 1 (when possible) of the closest unit" , function() {
-		expect( Element.parse( "[n:1200/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
-		expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
-		expect( Element.parse( "[n:800/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '8hm' ) ;
-		expect( Element.parse( "[n:600/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '6hm' ) ;
-		expect( Element.parse( "[n:500/uv:1000|100|1/uf:$#km|$#hm|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '5hm' ) ;
-		expect( Element.parse( "[n:600/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '600m' ) ;
-		expect( Element.parse( "[n:500/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '500m' ) ;
-		expect( Element.parse( "[n:0.2/uv:1000|1/uf:$#km|$#m/uenum:0|$#|, $#| and $#/um:R1+]" ).solve( babel ) )
+		expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '0.2m' ) ;
 	} ) ;
 } ) ;
@@ -489,7 +451,7 @@ describe( "Escape special character" , function() {
 describe( "Sentence instances" , function() {
 		
 	it( "Basic sentence" , function() {
-		var sentence = Babel.Sentence.create( "Give me $1 apple$1[altn:|s]!" ) ;
+		var sentence = new Sentence( "Give me $1 apple$1[altn:|s]!" ) ;
 		
 		expect( sentence.toString( 0 ) ).to.be( "Give me 0 apple!" ) ;
 		expect( sentence.toString( 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -498,7 +460,7 @@ describe( "Sentence instances" , function() {
 	} ) ;
 		
 	it( ".toStringKFG()" , function() {
-		var sentence = Babel.Sentence.create( "I like ${name}!" ) ;
+		var sentence = new Sentence( "I like ${name}!" ) ;
 		
 		expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
 	} ) ;
@@ -648,6 +610,12 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 	} ) ;
 	
+	// TODO...
+	it.skip( "array and no enum behavior" , function() {
+		var babel = Babel.create() ;
+		expect( babel.solve( "I want $1." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want ???." ) ;
+	} ) ;
+	
 	it( "when a string is given instead of an array, it should be equivalent to an array of the given string" , function() {
 		var babel = Babel.create() ;
 		expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
@@ -677,7 +645,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "I want many things: a pear, a banana and a strawberry." ) ;
 	} ) ;
 	
-	it( "xxx enumeration with variable length, translation and operators in enumeration" , function() {
+	it( "enumeration with variable length, translation and operators in enumeration" , function() {
 		var babel = Babel.create() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -723,7 +691,7 @@ describe( "Advanced feature: reference operator" , function() {
 	var babel = Babel.create() ;
 	
 	it( "using reference operator that point to an element should extend the current element/part" , function() {
-		var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+		var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
 		expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
 		
@@ -736,11 +704,11 @@ describe( "Advanced feature: reference operator" , function() {
 	} ) ;
 	
 	it( "using reference operator stacked with other operators" , function() {
-		var e = Element.parse( "[uv:1000|1/uf:$#km|$#m/um:N+]" ) ;
+		var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
 		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
 		expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
-		expect( babel.solve( "${length}[$:lengthUnit/uf:$# km|$# m/uenum:0|$#|, $#| and $#]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
+		expect( babel.solve( "${length}[$:lengthUnit/uf:$ km|$ m/uenum:0|$|, $| and $]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
 	} ) ;
 } ) ;
 
@@ -825,7 +793,7 @@ describe( "Misc" , function() {
 		expect( Babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
 		expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
-		expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $# and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
+		expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $ and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.eql( [ 'first' , 'second' ] ) ;
 	} ) ;
@@ -835,7 +803,7 @@ describe( "Misc" , function() {
 
 describe( "'en'/'fr' core langpack features" , function() {
 	
-	it( "xxx testing few features" , function() {
+	it( "testing few features" , function() {
 		var babel = Babel.create() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
