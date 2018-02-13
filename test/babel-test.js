@@ -835,7 +835,7 @@ describe( "Misc" , function() {
 
 describe( "'en'/'fr' core langpack features" , function() {
 	
-	it( "testing few features" , function() {
+	it( "xxx testing few features" , function() {
 		var babel = Babel.create() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
@@ -848,8 +848,8 @@ describe( "'en'/'fr' core langpack features" , function() {
 				sentences: {
 					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
 					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
-					"$1[//uc1], beautiful $1.": "$1[artDef//uc1] $1, $1[gel?(le beau|le bel)|(la belle)] $1." ,
-					"I want a $1.": "Je veux $1[artIndef] $1."
+					"$1[//uc1], beautiful $1.": "$1[artDef//uc1]$1, $1[gel:(le beau|le bel)|(la belle)]$1." ,
+					"I want a $1.": "Je veux $1[artIndef]$1."
 				} ,
 				elements: {
 					tree: { altn: [ "arbre" , "arbres" ] , g: 'm' } ,
