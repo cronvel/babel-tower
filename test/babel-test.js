@@ -677,7 +677,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "I want many things: a pear, a banana and a strawberry." ) ;
 	} ) ;
 	
-	it( "enumeration with variable length, translation and operators in enumeration" , function() {
+	it( "xxx enumeration with variable length, translation and operators in enumeration" , function() {
 		var babel = Babel.create() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -711,8 +711,8 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babelFr.solve( sentence , [ "pear" , "strawberry" ] ) ).to.be( "Je veux deux choses: une poire et une fraise." ) ;
 		expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
 		
-		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
-		expect( babelFr.solve( sentence , [ { t:"pear",n:'many'} , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
+		expect( babelFr.solve( sentence , [ { t:"pear" , n:3 } ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
+		expect( babelFr.solve( sentence , [ { t:"pear" , n:'many' } , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
 	} ) ;
 } ) ;
 
