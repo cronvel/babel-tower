@@ -797,6 +797,17 @@ describe( "Misc" , function() {
 		expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.eql( [ 'first' , 'second' ] ) ;
 	} ) ;
+		
+	it( "edge cases" , function() {
+		var babel = new Babel() ;
+		expect( babel.solve( "--'${content}'--" , { content: new String( 'content' ) } ) ).to.be( "--'content'--" ) ;
+		
+		expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: null } ) ).to.be( "nothing" ) ;
+		expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [] } ) ).to.be( "nothing" ) ;
+		expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ '' ] } ) ).to.be( "something: --''--" ) ;
+		expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ 'content' ] } ) ).to.be( "something: --'content'--" ) ;
+		expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ new String( 'content' ) ] } ) ).to.be( "something: --'content'--" ) ;
+	} ) ;
 } ) ;
 
 
