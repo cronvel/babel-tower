@@ -775,6 +775,19 @@ expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eq
 expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.eql( [ 'first' , 'second' ] ) ;
 ```
 
+edge cases.
+
+```js
+var babel = new Babel() ;
+expect( babel.solve( "--'${content}'--" , { content: new String( 'content' ) } ) ).to.be( "--'content'--" ) ;
+
+expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: null } ) ).to.be( "nothing" ) ;
+expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [] } ) ).to.be( "nothing" ) ;
+expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ '' ] } ) ).to.be( "something: --''--" ) ;
+expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ 'content' ] } ) ).to.be( "something: --'content'--" ) ;
+expect( babel.solve( "${contentList}[enum:nothing|something: --'$'--]" , { contentList: [ new String( 'content' ) ] } ) ).to.be( "something: --'content'--" ) ;
+```
+
 <a name="enfr-core-langpack-features"></a>
 # 'en'/'fr' core langpack features
 testing few features.
