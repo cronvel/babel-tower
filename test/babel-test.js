@@ -34,9 +34,15 @@ var Babel = require( '../lib/Babel.js' ) ;
 var Element = Babel.Element ;
 var Sentence = Babel.Sentence ;
 
+var string = require( 'string-kit' ) ;
 var expect = require( 'expect.js' ) ;
 
 
+
+function deb( v )
+{
+	console.log( string.inspect( { style: 'color' , depth: 15 } , v ) ) ;
+}
 
 
 
@@ -171,6 +177,7 @@ describe( "Element parser and solver" , function() {
 	} ) ;
 	
 	it.skip( "parse units" , function() {
+		deb( Element.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ) ;
 		expect( Element.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ).to.eql( {
 			n: "1" ,
 			uv: [ 1000 , 1 ] ,
