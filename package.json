@@ -1,6 +1,6 @@
 {
   "name": "babel-tower",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "i18n",
   "main": "lib/Babel.js",
   "engines": {
@@ -41,7 +41,8 @@
   "copyright": {
     "title": "Babel Tower",
     "years": [
-      2016
+      2016,
+      2018
     ],
     "owner": "Cédric Ronvel"
   }

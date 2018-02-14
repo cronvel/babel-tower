@@ -224,7 +224,7 @@ expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]"
 should format $$ into $.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 ```
@@ -232,7 +232,7 @@ expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 single $ behaviour should default to the first argument or to the last used argument+path.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $!" , "apples" , "pears" ) ).to.be( "Give me apples!" ) ;
 expect( babel.solve( "Give me $2!" , "apples" , "pears" ) ).to.be( "Give me pears!" ) ;
@@ -252,7 +252,7 @@ expect( babel.solve( "Give me ${fruit1}[//uc] and $[//uc1]!" , ctx ) ).to.be( "G
 should format things accordingly.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
 expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -263,7 +263,7 @@ expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 3 ) ).to.be( "Give me 3 ap
 should format things accordingly using short-hand notation.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
 expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -274,7 +274,7 @@ expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Give me 3 apple
 should format things using the 'ng?' or 'altng' notation.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "J'aime $1[ng?(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
 expect( babel.solve( "J'aime $1[altng:(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:3,g:'f'} ) ).to.be( "J'aime les juments!" ) ;
@@ -287,7 +287,7 @@ expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , {g:'f'} )
 should format things using the 'n0?' or 'altn0' notation.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 0 ) ).to.be( "There is no horse..." ) ;
 expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 1 ) ).to.be( "There is an horse..." ) ;
 expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 2 ) ).to.be( "There are many horses..." ) ;
@@ -297,7 +297,7 @@ expect( babel.solve( "There $1[n?is|are] $1[altn0:no|an|many] horse$1[n?|s]..." 
 should format things using the 'n:' notation.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "There is an $1[n:1]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There is an horse..." ) ;
 expect( babel.solve( "There are $1[n:2]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 expect( babel.solve( "There are $1[n:many]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
@@ -321,7 +321,7 @@ expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are h
 should format things using the 'n0g?' or 'altn0g' notation.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
 expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:3,g:'f'} ) ).to.be( "J'aime les juments!" ) ;
@@ -334,7 +334,7 @@ expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(c
 should work with objects, using the path syntax.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 var data = {
 	bob: { firstName: "Bobby" , lastName: "Fischer" } ,
@@ -349,7 +349,7 @@ expect( babel.solve( "Hello $1{bob.firstName} $1{bob.lastName} and $1{alice.firs
 $ without number should use the first arg, just like $1.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 var data = {
 	bob: { firstName: "Bobby" , lastName: "Fischer" } ,
@@ -362,7 +362,7 @@ expect( babel.solve( "Hello ${bob.firstName} ${bob.lastName} and ${alice.firstNa
 undefined values for missing variable index/path.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $1 and $3!" , "apples" , "pears" ) ).to.be( "Give me apples and (undefined)!" ) ;
 expect( babel.solve( "Give me $3 and $2!" , "apples" , "pears" ) ).to.be( "Give me (undefined) and pears!" ) ;
@@ -379,7 +379,7 @@ expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[//uc]!" , ct
 default values for missing variable index/path.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $1 and $3[d:strawberries]!" , "apples" , "pears" ) ).to.be( "Give me apples and strawberries!" ) ;
 expect( babel.solve( "Give me $3[default:strawberries] and $2!" , "apples" , "pears" ) ).to.be( "Give me strawberries and pears!" ) ;
@@ -398,7 +398,7 @@ expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[d:strawberri
 escape inside sentence bracket.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
 expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
@@ -407,7 +407,7 @@ expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Giv
 escape inside element bracket.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( Element.parse( "element[default:pears/n:2]!" ) ).to.eql( {
 	t: "element" ,
@@ -452,7 +452,7 @@ expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawb
 should format and localize.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 // Load a pseudo DB
 babel.extend( {
@@ -495,7 +495,7 @@ expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 p
 should format and localize, using language functions.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 var babelFr = babel.use( 'fr' ) ;
 
 var n2w = require( 'number-to-words' ) ;
@@ -556,7 +556,7 @@ expect( babelFr.solve( "There $1[n?is|are] $1[nw] horse$1[n?|s]!" , 2 ) ).to.be(
 should format and localize, and localize translatable variables.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 var babelFr = babel.use( 'fr' ) ;
 
 // Load a pseudo DB
@@ -586,14 +586,14 @@ expect( babelFr.solve( "I like $1[n:many]!" , "horse" ) ).to.be( "J'aime les che
 basic enumeration with no rules should simply join with a space.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 ```
 
 when a string is given instead of an array, it should be equivalent to an array of the given string.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
 expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 ```
@@ -601,7 +601,7 @@ expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 enumeration with variable length.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
 expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
 expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
@@ -612,7 +612,7 @@ expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pea
 the array length should be used as n.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [] ) ).to.be( "I want nothing." ) ;
 expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [ "apple" ] ) ).to.be( "I want something." ) ;
@@ -628,7 +628,7 @@ expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things:
 enumeration with variable length, translation and operators in enumeration.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 var babelFr = babel.use( 'fr' ) ;
 
 var n2w = require( 'number-to-words' ) ;
@@ -697,7 +697,7 @@ expect( babel.solve( "${length}[$:lengthUnit/uf:$ km|$ m/uenum:0|$|, $| and $]" 
 should apply post-filters 'uc1' (upper-case first letter).
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 var babelFr = babel.use( 'fr' ) ;
 
 // Load a pseudo DB
@@ -730,7 +730,7 @@ expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.b
 should apply post-filters various filters combination.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
 expect( babel.solve( "$1[//uc]: I like that!" , "apple" ) ).to.be( "APPLE: I like that!" ) ;
@@ -746,7 +746,7 @@ expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) 
 should apply english post-filters.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 
 expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
 expect( babel.solve( "You take $1[//en:the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
@@ -760,7 +760,7 @@ expect( babel.solve( "You take ${noun//en:the}." , { noun: "apple" } ) ).to.be( 
 should apply path post-filters.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 expect( babel.solve( "$[//extname]" , "README.md" ) ).to.be( ".md" ) ;
 expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
 expect( babel.solve( "$[//basename]" , "~/somedir/README.md" ) ).to.be( "README.md" ) ;
@@ -786,7 +786,7 @@ expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${fi
 testing few features.
 
 ```js
-var babel = Babel.create() ;
+var babel = new Babel() ;
 var babelEn = babel.use( 'en' ) ;
 var babelFr = babel.use( 'fr' ) ;
 
@@ -841,13 +841,13 @@ should escape argument using the autoEscape regexp.
 ```js
 var babel , regex ;
 
-babel = Babel.create() ;
+babel = new Babel() ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^le^:!" ) ;
 
 regex = /(\^|%)/g ;
 regex.substitution = '$1$1' ;
-babel = Babel.create( regex ) ;
+babel = new Babel( regex ) ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
 ```

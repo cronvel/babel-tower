@@ -1,7 +1,7 @@
 /*
 	Babel Tower
 	
-	Copyright (c) 2016 Cédric Ronvel
+	Copyright (c) 2016 - 2018 Cédric Ronvel
 	
 	The MIT License (MIT)
 	
@@ -46,7 +46,7 @@ var expect = require( 'expect.js' ) ;
 
 describe( "Element parser and solver" , function() {
 	
-	var babel = Babel.create() ;
+	var babel = new Babel() ;
 	var element ;
 	
 	babel.extend( {
@@ -193,7 +193,7 @@ describe( "Element parser and solver" , function() {
 
 describe( "Units of measurement" , function() {
 	
-	var babel = Babel.create() ;
+	var babel = new Babel() ;
 	
 	it( "using an enumeration of natural positive integer units" , function() {
 		expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
@@ -263,13 +263,13 @@ describe( "Units of measurement" , function() {
 describe( "Basic usage without language pack" , function() {
 	
 	it( "should format $$ into $" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 	} ) ;
 	
 	it( "single $ behaviour should default to the first argument or to the last used argument+path" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $!" , "apples" , "pears" ) ).to.be( "Give me apples!" ) ;
 		expect( babel.solve( "Give me $2!" , "apples" , "pears" ) ).to.be( "Give me pears!" ) ;
@@ -287,7 +287,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things accordingly" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
 		expect( babel.solve( "Give me $1 apple$1[altn:|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -296,7 +296,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things accordingly using short-hand notation" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
@@ -305,7 +305,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things using the 'ng?' or 'altng' notation" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "J'aime $1[ng?(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
 		expect( babel.solve( "J'aime $1[altng:(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:3,g:'f'} ) ).to.be( "J'aime les juments!" ) ;
@@ -316,7 +316,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things using the 'n0?' or 'altn0' notation" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 0 ) ).to.be( "There is no horse..." ) ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 1 ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 2 ) ).to.be( "There are many horses..." ) ;
@@ -324,7 +324,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things using the 'n:' notation" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "There is an $1[n:1]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There are $1[n:2]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 		expect( babel.solve( "There are $1[n:many]..." , { altn: [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
@@ -346,7 +346,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should format things using the 'n0g?' or 'altn0g' notation" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
 		expect( babel.solve( "J'aime $1[altn0g:(aucun|aucune)|(le|la)|(les)] $1[altng:(cheval|jument)|(chevaux|juments)]!" , {n:3,g:'f'} ) ).to.be( "J'aime les juments!" ) ;
@@ -357,7 +357,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "should work with objects, using the path syntax" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		var data = {
 			bob: { firstName: "Bobby" , lastName: "Fischer" } ,
@@ -370,7 +370,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "$ without number should use the first arg, just like $1" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		var data = {
 			bob: { firstName: "Bobby" , lastName: "Fischer" } ,
@@ -381,7 +381,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "undefined values for missing variable index/path" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 and $3!" , "apples" , "pears" ) ).to.be( "Give me apples and (undefined)!" ) ;
 		expect( babel.solve( "Give me $3 and $2!" , "apples" , "pears" ) ).to.be( "Give me (undefined) and pears!" ) ;
@@ -396,7 +396,7 @@ describe( "Basic usage without language pack" , function() {
 	} ) ;
 	
 	it( "default values for missing variable index/path" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 and $3[d:strawberries]!" , "apples" , "pears" ) ).to.be( "Give me apples and strawberries!" ) ;
 		expect( babel.solve( "Give me $3[default:strawberries] and $2!" , "apples" , "pears" ) ).to.be( "Give me strawberries and pears!" ) ;
@@ -416,14 +416,14 @@ describe( "Basic usage without language pack" , function() {
 describe( "Escape special character" , function() {
 	
 	it( "escape inside sentence bracket" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
 		expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
 	} ) ;
 	
 	it( "escape inside element bracket" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( Element.parse( "element[default:pears/n:2]!" ) ).to.eql( {
 			t: "element" ,
@@ -471,7 +471,7 @@ describe( "Sentence instances" , function() {
 describe( "Basic usage with language pack" , function() {
 	
 	it( "should format and localize" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		// Load a pseudo DB
 		babel.extend( {
@@ -515,7 +515,7 @@ describe( "Basic usage with language pack" , function() {
 describe( "Language pack and functions" , function() {
 	
 	it( "should format and localize, using language functions" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
 		var n2w = require( 'number-to-words' ) ;
@@ -575,7 +575,7 @@ describe( "Language pack and functions" , function() {
 	} ) ;
 	
 	it( "should format and localize, and localize translatable variables" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
 		// Load a pseudo DB
@@ -606,24 +606,24 @@ describe( "Language pack and functions" , function() {
 describe( "Advanced feature: list and enumeration" , function() {
 	
 	it( "basic enumeration with no rules should simply join with a space" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 	} ) ;
 	
 	// TODO...
 	it.skip( "array and no enum behavior" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "I want $1." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want ???." ) ;
 	} ) ;
 	
 	it( "when a string is given instead of an array, it should be equivalent to an array of the given string" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
 		expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 	} ) ;
 	
 	it( "enumeration with variable length" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" ] ) ).to.be( "I want apples and pears." ) ;
@@ -632,7 +632,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 	} ) ;
 	
 	it( "the array length should be used as n" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [] ) ).to.be( "I want nothing." ) ;
 		expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [ "apple" ] ) ).to.be( "I want something." ) ;
@@ -646,7 +646,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 	} ) ;
 	
 	it( "enumeration with variable length, translation and operators in enumeration" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
 		var n2w = require( 'number-to-words' ) ;
@@ -688,7 +688,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 
 describe( "Advanced feature: reference operator" , function() {
 	
-	var babel = Babel.create() ;
+	var babel = new Babel() ;
 	
 	it( "using reference operator that point to an element should extend the current element/part" , function() {
 		var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
@@ -717,7 +717,7 @@ describe( "Advanced feature: reference operator" , function() {
 describe( "Post-filters" , function() {
 	
 	it( "should apply post-filters 'uc1' (upper-case first letter)" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
 		// Load a pseudo DB
@@ -748,7 +748,7 @@ describe( "Post-filters" , function() {
 	} ) ;
 	
 	it( "should apply post-filters various filters combination" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
 		expect( babel.solve( "$1[//uc]: I like that!" , "apple" ) ).to.be( "APPLE: I like that!" ) ;
@@ -762,7 +762,7 @@ describe( "Post-filters" , function() {
 	} ) ;
 	
 	it( "should apply english post-filters" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		
 		expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
 		expect( babel.solve( "You take $1[//en:the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
@@ -774,7 +774,7 @@ describe( "Post-filters" , function() {
 	} ) ;
 	
 	it( "should apply path post-filters" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		expect( babel.solve( "$[//extname]" , "README.md" ) ).to.be( ".md" ) ;
 		expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
 		expect( babel.solve( "$[//basename]" , "~/somedir/README.md" ) ).to.be( "README.md" ) ;
@@ -804,7 +804,7 @@ describe( "Misc" , function() {
 describe( "'en'/'fr' core langpack features" , function() {
 	
 	it( "testing few features" , function() {
-		var babel = Babel.create() ;
+		var babel = new Babel() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -860,13 +860,13 @@ describe( "String-kit's format() interoperability" , function() {
 	it( "should escape argument using the autoEscape regexp" , function() {
 		var babel , regex ;
 		
-		babel = Babel.create() ;
+		babel = new Babel() ;
 		expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 		expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^le^:!" ) ;
 		
 		regex = /(\^|%)/g ;
 		regex.substitution = '$1$1' ;
-		babel = Babel.create( regex ) ;
+		babel = new Babel( regex ) ;
 		expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 		expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
 	} ) ;
