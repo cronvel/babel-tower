@@ -121,6 +121,21 @@ describe( "Element parser and solver" , function() {
 		expect( new Element( { altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 	} ) ;
 	
+	it( "a Element created with a 'p' and a 'altp' should resolve to the appropriate alternative" , function() {
+		expect( new Element( { p: '1' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "je" ) ;
+		expect( new Element( { p: '2' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "tu" ) ;
+		expect( new Element( { p: '3' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+	
+		expect( new Element( { altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+	} ) ;
+	
+	it( "a Element created with a 'u' and a 'altu' should resolve to the appropriate alternative" , function() {
+		expect( new Element( { u: 'c' , altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+		expect( new Element( { u: 'p' , altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "Misty" ) ;
+		
+		expect( new Element( { altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+	} ) ;
+	
 	it( "a Element created with a 'g' and a 'altg' should resolve to the appropriate alternative" , function() {
 		expect( new Element( { g: 'm' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Element( { g: 'f' , altg: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
@@ -150,6 +165,29 @@ describe( "Element parser and solver" , function() {
 		expect( new Element( { g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
 		
 		expect( new Element( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+	} ) ;
+	
+	it( "a Element created with a 'n', 'p', 'g' and 'altnpg' should resolve to the appropriate alternative" , function() {
+		var npg = [
+			[
+				[ "je" ] ,
+				[ "tu" ] ,
+				[ "il" , "elle" ]
+			] ,
+			[
+				[ "nous" ] ,
+				[ "vous" ] ,
+				[ "ils" , "elles" ]
+			]
+		] ;
+		expect( new Element( { p: '1' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "je" ) ;
+		expect( new Element( { p: '2' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "tu" ) ;
+		expect( new Element( { p: '3' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "il" ) ;
+		expect( new Element( { p: '3' , n: 1 , g: 'f' , altnpg: npg } ).solve( babel ) ).to.be( "elle" ) ;
+		expect( new Element( { p: '1' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "nous" ) ;
+		expect( new Element( { p: '2' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "vous" ) ;
+		expect( new Element( { p: '3' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "ils" ) ;
+		expect( new Element( { p: '3' , n: 2 , g: 'f' , altnpg: npg } ).solve( babel ) ).to.be( "elles" ) ;
 	} ) ;
 	
 	it( "a Element created with a 'n' and/or 'g' and a 't' should extend the element existing in the dictionary with 'n' and resolve to the appropriate alternative" , function() {
@@ -271,7 +309,6 @@ describe( "Basic usage without language pack" , function() {
 	
 	it( "should format $$ into $" , function() {
 		var babel = new Babel() ;
-		
 		expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 	} ) ;
 	

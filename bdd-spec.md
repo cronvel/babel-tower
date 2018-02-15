@@ -82,6 +82,25 @@ expect( new Element( { n: 3 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).
 expect( new Element( { altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 ```
 
+a Element created with a 'p' and a 'altp' should resolve to the appropriate alternative.
+
+```js
+expect( new Element( { p: '1' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "je" ) ;
+expect( new Element( { p: '2' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "tu" ) ;
+expect( new Element( { p: '3' , altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+	
+expect( new Element( { altp: [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+```
+
+a Element created with a 'u' and a 'altu' should resolve to the appropriate alternative.
+
+```js
+expect( new Element( { u: 'c' , altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+expect( new Element( { u: 'p' , altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "Misty" ) ;
+
+expect( new Element( { altu: [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+```
+
 a Element created with a 'g' and a 'altg' should resolve to the appropriate alternative.
 
 ```js
@@ -115,6 +134,31 @@ expect( new Element( { g: 'm' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" ,
 expect( new Element( { g: 'f' , altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
 
 expect( new Element( { altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+```
+
+a Element created with a 'n', 'p', 'g' and 'altnpg' should resolve to the appropriate alternative.
+
+```js
+var npg = [
+	[
+		[ "je" ] ,
+		[ "tu" ] ,
+		[ "il" , "elle" ]
+	] ,
+	[
+		[ "nous" ] ,
+		[ "vous" ] ,
+		[ "ils" , "elles" ]
+	]
+] ;
+expect( new Element( { p: '1' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "je" ) ;
+expect( new Element( { p: '2' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "tu" ) ;
+expect( new Element( { p: '3' , n: 1 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "il" ) ;
+expect( new Element( { p: '3' , n: 1 , g: 'f' , altnpg: npg } ).solve( babel ) ).to.be( "elle" ) ;
+expect( new Element( { p: '1' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "nous" ) ;
+expect( new Element( { p: '2' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "vous" ) ;
+expect( new Element( { p: '3' , n: 2 , g: 'm' , altnpg: npg } ).solve( babel ) ).to.be( "ils" ) ;
+expect( new Element( { p: '3' , n: 2 , g: 'f' , altnpg: npg } ).solve( babel ) ).to.be( "elles" ) ;
 ```
 
 a Element created with a 'n' and/or 'g' and a 't' should extend the element existing in the dictionary with 'n' and resolve to the appropriate alternative.
@@ -219,7 +263,6 @@ should format $$ into $.
 
 ```js
 var babel = new Babel() ;
-
 expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 ```
 
