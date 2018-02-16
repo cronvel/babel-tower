@@ -57,10 +57,12 @@ describe( "Element parser and solver" , function() {
 	
 	babel.extend( {
 		fr: {
-			gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
+			propertyIndexes: {
+				g: { m: 0 , f: 1 , n: 2 , h: 2 }
+			} ,
 			elements: {
-				apple: { g:'f', altn: [ 'pomme' , 'pommes' ] } ,
-				horse: { altng: [ [ 'cheval' , 'jument' ] , [ 'chevaux' , 'juments' ] ] } ,
+				apple: { g:'f', alt: [ 'pomme' , 'pommes' ] , ord: ['n'] } ,
+				horse: { alt: [ [ 'cheval' , 'jument' ] , [ 'chevaux' , 'juments' ] ] , ord: ['n','g'] } ,
 			}
 		}
 	} ) ;
@@ -70,29 +72,20 @@ describe( "Element parser and solver" , function() {
 	it( "should parse an element" , function() {
 		expect( Element.parse( "horse" ) ).to.eql( { k: "horse" } ) ;
 		expect( Element.parse( "[k:horse]" ) ).to.eql( { k: "horse" } ) ;
-		expect( Element.parse( "horse[altng:(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
-			k: "horse" ,
-			altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
-		} ) ;
 		expect( Element.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
 			k: "horse" ,
-			altng: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ]
-		} ) ;
-		expect( Element.parse( "horse[altn:cheval|chevaux]" ) ).to.eql( {
-			k: "horse" ,
-			altn: [ "cheval" , "chevaux" ]
+			alt: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] ,
+			ord: ['n','g']
 		} ) ;
 		expect( Element.parse( "horse[n?cheval|chevaux]" ) ).to.eql( {
 			k: "horse" ,
-			altn: [ "cheval" , "chevaux" ]
-		} ) ;
-		expect( Element.parse( "horse[altg:cheval|jument]" ) ).to.eql( {
-			k: "horse" ,
-			altg: [ "cheval" , "jument" ]
+			alt: [ "cheval" , "chevaux" ] ,
+			ord: ['n']
 		} ) ;
 		expect( Element.parse( "horse[g?cheval|jument]" ) ).to.eql( {
 			k: "horse" ,
-			altg: [ "cheval" , "jument" ]
+			alt: [ "cheval" , "jument" ] ,
+			ord: ['g']
 		} ) ;
 	} ) ;
 	
@@ -112,8 +105,49 @@ describe( "Element parser and solver" , function() {
 		expect( new Element( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
 	} ) ;
 	
+	it( "a Element created directly with 'alt' and 'ord'" , function() {
+		expect( new Element( { g: 'm' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+		expect( new Element( { g: 'f' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
+		
+		expect( new Element( { n: 0 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+		expect( new Element( { n: 1 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+		expect( new Element( { n: 2 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Element( { n: 5 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Element( { n: 'many' , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		
+		expect( new Element( { n: 0 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "rien" ) ;
+		expect( new Element( { n: 1 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+		expect( new Element( { n: 2 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Element( { n: 5 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Element( { n: 'many' , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		
+		var npg = [
+			[
+				"je" ,
+				"tu" ,
+				[ "il" , "elle" ]
+			] ,
+			[
+				"nous" ,
+				"vous" ,
+				[ "ils" , "elles" ]
+			]
+		] ;
+		
+		var ord = [ 'n' , 'p' , 'g' ] ;
+		
+		expect( new Element( { p: '1' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "je" ) ;
+		expect( new Element( { p: '2' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "tu" ) ;
+		expect( new Element( { p: '3' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "il" ) ;
+		expect( new Element( { p: '3' , n: 1 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elle" ) ;
+		expect( new Element( { p: '1' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "nous" ) ;
+		expect( new Element( { p: '2' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "vous" ) ;
+		expect( new Element( { p: '3' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "ils" ) ;
+		expect( new Element( { p: '3' , n: 2 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elles" ) ;
+	} ) ;
+	
 	it( "a Element created with a 'n' and a 'altn' should resolve to the appropriate alternative" , function() {
-		expect( new Element( { n: 0 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+		expect( new Element( { n: 0 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 		expect( new Element( { n: 1 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 		expect( new Element( { n: 2 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
 		expect( new Element( { n: 3 , altn: [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
