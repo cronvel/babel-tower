@@ -758,6 +758,23 @@ describe( "Advanced feature: reference operator" , function() {
 	
 	var babel = new Babel() ;
 	
+	it( "using reference operator that point to verb element" , function() {
+		var ctx = {
+			verbe: {
+				"etre": Element.parse( "être[p?suis|es|est]" ) ,
+				//"avoir": 
+			} ,
+			sujet: {
+				moi: Element.parse( "[p:1/s:je]" ) ,
+				bob: Element.parse( "[s:Bob]" ) ,
+			}
+		} ;
+		
+		expect( babel.solve( "${sujet.moi//uc1} $[$:verbe.etre] content!" , ctx ) ).to.be( "Je suis content!" ) ;
+		expect( babel.solve( "${sujet.bob//uc1} $[$:verbe.etre] content!" , ctx ) ).to.be( "Bob est content!" ) ;
+		expect( babel.solve( "Tu ${sujet.bob}[$:verbe.etre/p:2] content!" , ctx ) ).to.be( "Tu es content!" ) ;
+	} ) ;
+	
 	it( "using reference operator that point to an element should extend the current element/part" , function() {
 		var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
