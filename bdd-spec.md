@@ -12,6 +12,7 @@
    - [Misc](#misc)
    - ['en'/'fr' core langpack features](#enfr-core-langpack-features)
    - [String-kit's format() interoperability](#string-kits-format-interoperability)
+   - [Lab](#lab)
 <a name=""></a>
  
 <a name="element-parser-and-solver"></a>
@@ -922,5 +923,61 @@ regex.substitution = '$1$1' ;
 babel = new Babel( regex ) ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
+```
+
+<a name="lab"></a>
+# Lab
+using reference operator as verb.
+
+```js
+var babel = new Babel() ;
+
+var ctx = {
+	verbe: {
+		"être": Element.parse( "être[p?suis|es|est]" )
+	} ,
+	sujet: {
+		moi: Element.parse( "[p:1/s:je]" ) ,
+		bob: Element.parse( "[s:Bob]" )
+	}
+} ;
+
+expect( babel.solve( "${sujet.moi//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Je suis content!" ) ;
+expect( babel.solve( "${sujet.bob//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Bob est content!" ) ;
+expect( babel.solve( "Tu ${sujet.bob}[$:verbe.être/p:2] content!" , ctx ) ).to.be( "Tu es content!" ) ;
+```
+
+using a function as verb.
+
+```js
+var babel = new Babel() ;
+
+babel.extendLocale( {
+	defaultEnum: [ "" , "$" , ", $" , " et $" ] ,
+	functions: {
+		"être": "être[np?(suis|es|est)|(sommes|êtes|sont)]" ,
+		"pronom": "pronom[npg?(je|tu|(il|elle))|(nous|vous|(ils|elles))]"
+	}
+} ) ;
+
+var ctx = {
+	moi: Element.parse( "[p:1/s:je]" ) ,
+	alice: Element.parse( "[s:Alice/g:f]" ) ,
+	bob: Element.parse( "[s:Bob/g:m]" ) ,
+} ;
+
+ctx.people = [ ctx.alice , ctx.bob ] ;
+
+expect( babel.solve( "${moi//uc1} $[être] content!" , ctx ) ).to.be( "Je suis content!" ) ;
+expect( babel.solve( "${alice//uc1} $[être] content$[g?|e]!" , ctx ) ).to.be( "Alice est contente!" ) ;
+expect( babel.solve( "${bob//uc1} $[être] content$[g?|e]!" , ctx ) ).to.be( "Bob est content!" ) ;
+expect( babel.solve( "${alice}[pronom//uc1] $[être] content$[g?|e]!" , ctx ) ).to.be( "Elle est contente!" ) ;
+expect( babel.solve( "${bob}[pronom//uc1] $[être] content$[g?|e]!" , ctx ) ).to.be( "Il est content!" ) ;
+expect( babel.solve( "${alice}[pronom/p:2//uc1] $[être/p:2] content$[g?|e]!" , ctx ) ).to.be( "Tu es contente!" ) ;
+expect( babel.solve( "${bob}[pronom/p:2//uc1] $[être/p:2] content$[g?|e]!" , ctx ) ).to.be( "Tu es content!" ) ;
+
+expect( babel.solve( "${people}[enum] $[être] content$[ng?(|e)|(s|es)]!" , ctx ) ).to.be( "Alice et Bob sont contents!" ) ;
+expect( babel.solve( "${alice}[enum] $[être] content$[ng?(|e)|(s|es)]!" , ctx ) ).to.be( "Alice est contente!" ) ;
+expect( babel.solve( "${bob}[enum] $[être] content$[ng?(|e)|(s|es)]!" , ctx ) ).to.be( "Bob est content!" ) ;
 ```
 
