@@ -327,7 +327,27 @@ expect( babel.solve( "Give me ${fruit2} and $!" , ctx ) ).to.be( "Give me pears 
 expect( babel.solve( "Give me ${fruit1}[//uc] and $[//uc1]!" , ctx ) ).to.be( "Give me APPLES and Apples!" ) ;
 ```
 
-should format things accordingly.
+variable as number.
+
+```js
+var babel = new Babel() ;
+
+expect( babel.solve( "Give me $1 apple!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
+expect( babel.solve( "Give me $1 apple!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
+expect( babel.solve( "Give me $1 apples!" , 2 ) ).to.be( "Give me 2 apples!" ) ;
+expect( babel.solve( "Give me $1 apples!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
+```
+
+variable as boolean.
+
+```js
+var babel = new Babel() ;
+
+expect( babel.solve( "This is $1!" , true ) ).to.be( "This is true!" ) ;
+expect( babel.solve( "This is $1!" , false ) ).to.be( "This is false!" ) ;
+```
+
+should format things using the 'n?' notation.
 
 ```js
 var babel = new Babel() ;
@@ -336,6 +356,33 @@ expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Give me 0 apple
 expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
 expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 2 ) ).to.be( "Give me 2 apples!" ) ;
 expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
+```
+
+should format things using the 'b?' notation.
+
+```js
+var babel = new Babel() ;
+
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 'true' ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 1 ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 10 ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , '1' ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , '10' ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 'many' ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 'false' ) ).to.be( "This is a lie!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , 0 ) ).to.be( "This is a lie!" ) ;
+expect( babel.solve( "This is $1[b?the truth|a lie]!" , '0' ) ).to.be( "This is a lie!" ) ;
+```
+
+should format things using the '?' (alias of 'n?') notation.
+
+```js
+var babel = new Babel() ;
+
+expect( babel.solve( "This is $1[?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
+expect( babel.solve( "This is $1[?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
 ```
 
 should format things using the 'ng?' notation.
