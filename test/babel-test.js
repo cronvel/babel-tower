@@ -364,7 +364,23 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me ${fruit1}[//uc] and $[//uc1]!" , ctx ) ).to.be( "Give me APPLES and Apples!" ) ;
 	} ) ;
 	
-	it( "should format things accordingly" , function() {
+	it( "zzz variable as number" , function() {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "Give me $1 apple!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
+		expect( babel.solve( "Give me $1 apple!" , 1 ) ).to.be( "Give me 1 apple!" ) ;
+		expect( babel.solve( "Give me $1 apples!" , 2 ) ).to.be( "Give me 2 apples!" ) ;
+		expect( babel.solve( "Give me $1 apples!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
+	} ) ;
+	
+	it( "zzz variable as boolean" , function() {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "This is $1!" , true ) ).to.be( "This is true!" ) ;
+		expect( babel.solve( "This is $1!" , false ) ).to.be( "This is false!" ) ;
+	} ) ;
+	
+	it( "zzz should format things using the 'n?' notation" , function() {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
@@ -373,6 +389,20 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 	
+	it( "zzz should format things using the 'b?' notation" , function() {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "This is $1[b?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
+		expect( babel.solve( "This is $1[b?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
+	} ) ;
+	
+	it( "zzz should format things using the '?' notation" , function() {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "This is $1[?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
+		expect( babel.solve( "This is $1[?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
+	} ) ;
+
 	it( "should format things using the 'ng?' notation" , function() {
 		var babel = new Babel() ;
 		
