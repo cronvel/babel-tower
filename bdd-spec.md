@@ -1,5 +1,5 @@
 # TOC
-   - [Element parser and solver](#element-parser-and-solver)
+   - [Atom parser and solver](#atom-parser-and-solver)
    - [Units of measurement](#units-of-measurement)
    - [Basic usage without language pack](#basic-usage-without-language-pack)
    - [Escape special character](#escape-special-character)
@@ -15,71 +15,71 @@
    - [Lab](#lab)
 <a name=""></a>
  
-<a name="element-parser-and-solver"></a>
-# Element parser and solver
-should parse an element.
+<a name="atom-parser-and-solver"></a>
+# Atom parser and solver
+should parse an atom.
 
 ```js
-expect( Element.parse( "horse" ) ).to.eql( { k: "horse" } ) ;
-expect( Element.parse( "[k:horse]" ) ).to.eql( { k: "horse" } ) ;
-expect( Element.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
+expect( Atom.parse( "horse" ) ).to.eql( { k: "horse" } ) ;
+expect( Atom.parse( "[k:horse]" ) ).to.eql( { k: "horse" } ) ;
+expect( Atom.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
 	k: "horse" ,
 	alt: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] ,
 	ord: ['n','g']
 } ) ;
-expect( Element.parse( "horse[n?cheval|chevaux]" ) ).to.eql( {
+expect( Atom.parse( "horse[n?cheval|chevaux]" ) ).to.eql( {
 	k: "horse" ,
 	alt: [ "cheval" , "chevaux" ] ,
 	ord: ['n']
 } ) ;
-expect( Element.parse( "horse[g?cheval|jument]" ) ).to.eql( {
+expect( Atom.parse( "horse[g?cheval|jument]" ) ).to.eql( {
 	k: "horse" ,
 	alt: [ "cheval" , "jument" ] ,
 	ord: ['g']
 } ) ;
 ```
 
-creating an element from a string should create a translatable Element object.
+creating an atom from a string should create a translatable Atom object.
 
 ```js
-expect( new Element( "horse" ) ).to.eql( { k: "horse" } ) ;
+expect( new Atom( "horse" ) ).to.eql( { k: "horse" } ) ;
 ```
 
-creating an element from a number should create a Element object with a 'n' (number) property.
+creating an atom from a number should create an Atom object with a 'n' (number) property.
 
 ```js
-expect( new Element( 3 ) ).to.eql( { n: 3 } ) ;
+expect( new Atom( 3 ) ).to.eql( { n: 3 } ) ;
 ```
 
-a Element created from a string should resolve to itself when the element is not in the dictionary.
+an Atom created from a string should resolve to itself when the atom is not in the dictionary.
 
 ```js
-expect( new Element( "horse" ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Atom( "horse" ).solve( babel ) ).to.be( "horse" ) ;
 ```
 
-a Element created from a string should resolve to the element existing in the dictionary.
+an Atom created from a string should resolve to the atom existing in the dictionary.
 
 ```js
-expect( new Element( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
+expect( new Atom( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
 ```
 
-a Element created directly with 'alt' and 'ord'.
+an Atom created directly with 'alt' and 'ord'.
 
 ```js
-expect( new Element( { g: 'm' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'f' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Atom( { g: 'm' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'f' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
 
-expect( new Element( { n: 0 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 1 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 5 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 'many' , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 1 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 5 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 'many' , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
-expect( new Element( { n: 0 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "rien" ) ;
-expect( new Element( { n: 1 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 5 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 'many' , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "rien" ) ;
+expect( new Atom( { n: 1 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 5 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 'many' , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
 var npg = [
 	[
@@ -96,82 +96,82 @@ var npg = [
 
 var ord = [ 'n' , 'p' , 'g' ] ;
 
-expect( new Element( { p: '1' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "je" ) ;
-expect( new Element( { p: '2' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "tu" ) ;
-expect( new Element( { p: '3' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "il" ) ;
-expect( new Element( { p: '3' , n: 1 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elle" ) ;
-expect( new Element( { p: '1' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "nous" ) ;
-expect( new Element( { p: '2' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "vous" ) ;
-expect( new Element( { p: '3' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "ils" ) ;
-expect( new Element( { p: '3' , n: 2 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elles" ) ;
+expect( new Atom( { p: '1' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "je" ) ;
+expect( new Atom( { p: '2' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "tu" ) ;
+expect( new Atom( { p: '3' , n: 1 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "il" ) ;
+expect( new Atom( { p: '3' , n: 1 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elle" ) ;
+expect( new Atom( { p: '1' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "nous" ) ;
+expect( new Atom( { p: '2' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "vous" ) ;
+expect( new Atom( { p: '3' , n: 2 , g: 'm' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "ils" ) ;
+expect( new Atom( { p: '3' , n: 2 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elles" ) ;
 ```
 
-a Element created with a 'n' and 'n?' should resolve to the appropriate alternative.
+an Atom created with a 'n' and 'n?' should resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { n: 0 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
-expect( new Element( { n: 1 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
-expect( new Element( { n: 2 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
-expect( new Element( { n: 3 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+expect( new Atom( { n: 0 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Atom( { n: 1 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Atom( { n: 2 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
+expect( new Atom( { n: 3 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
 
-expect( new Element( { "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
+expect( new Atom( { "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 ```
 
-a Element created with a 'p' and 'p?' should resolve to the appropriate alternative.
+an Atom created with a 'p' and 'p?' should resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { p: '1' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "je" ) ;
-expect( new Element( { p: '2' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "tu" ) ;
-expect( new Element( { p: '3' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+expect( new Atom( { p: '1' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "je" ) ;
+expect( new Atom( { p: '2' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "tu" ) ;
+expect( new Atom( { p: '3' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
 	
-expect( new Element( { "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
+expect( new Atom( { "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
 ```
 
-a Element created with a 'u' and 'u?' should resolve to the appropriate alternative.
+an Atom created with a 'u' and 'u?' should resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { u: 'c' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
-expect( new Element( { u: 'p' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "Misty" ) ;
+expect( new Atom( { u: 'c' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+expect( new Atom( { u: 'p' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "Misty" ) ;
 
-expect( new Element( { "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
+expect( new Atom( { "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
 ```
 
-a Element created with a 'g' and 'g?' should resolve to the appropriate alternative.
+an Atom created with a 'g' and 'g?' should resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { g: 'm' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'f' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( new Element( { g: 'n' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'h' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'm' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'f' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Atom( { g: 'n' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'h' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 
-expect( new Element( { "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 ```
 
-a Element created with a 'n' and/or 'g' and 'ng?' should resolve to the appropriate alternative.
+an Atom created with a 'n' and/or 'g' and 'ng?' should resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { n: 0 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 1 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 3 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 1 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 3 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
-expect( new Element( { n: 0 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( new Element( { n: 1 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
-expect( new Element( { n: 2 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
-expect( new Element( { n: 3 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+expect( new Atom( { n: 0 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Atom( { n: 1 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Atom( { n: 2 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
+expect( new Atom( { n: 3 , g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "juments" ) ;
 
-expect( new Element( { n: 0 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 1 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 3 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 1 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 3 , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 
-expect( new Element( { g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
+expect( new Atom( { g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'f' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "jument" ) ;
 
-expect( new Element( { "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
+expect( new Atom( { "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 ```
 
-a Element created with a 'n', 'p', 'g' and 'npg?' should resolve to the appropriate alternative.
+an Atom created with a 'n', 'p', 'g' and 'npg?' should resolve to the appropriate alternative.
 
 ```js
 var npg = [
@@ -186,40 +186,40 @@ var npg = [
 		[ "ils" , "elles" ]
 	]
 ] ;
-expect( new Element( { p: '1' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "je" ) ;
-expect( new Element( { p: '2' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "tu" ) ;
-expect( new Element( { p: '3' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "il" ) ;
-expect( new Element( { p: '3' , n: 1 , g: 'f' , "npg?": npg } ).solve( babel ) ).to.be( "elle" ) ;
-expect( new Element( { p: '1' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "nous" ) ;
-expect( new Element( { p: '2' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "vous" ) ;
-expect( new Element( { p: '3' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "ils" ) ;
-expect( new Element( { p: '3' , n: 2 , g: 'f' , "npg?": npg } ).solve( babel ) ).to.be( "elles" ) ;
+expect( new Atom( { p: '1' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "je" ) ;
+expect( new Atom( { p: '2' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "tu" ) ;
+expect( new Atom( { p: '3' , n: 1 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "il" ) ;
+expect( new Atom( { p: '3' , n: 1 , g: 'f' , "npg?": npg } ).solve( babel ) ).to.be( "elle" ) ;
+expect( new Atom( { p: '1' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "nous" ) ;
+expect( new Atom( { p: '2' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "vous" ) ;
+expect( new Atom( { p: '3' , n: 2 , g: 'm' , "npg?": npg } ).solve( babel ) ).to.be( "ils" ) ;
+expect( new Atom( { p: '3' , n: 2 , g: 'f' , "npg?": npg } ).solve( babel ) ).to.be( "elles" ) ;
 ```
 
-a Element created with a 'n' and/or 'g' and 'k' should extend the element existing in the dictionary with 'n' and resolve to the appropriate alternative.
+an Atom created with a 'n' and/or 'g' and 'k' should extend the atom existing in the dictionary with 'n' and resolve to the appropriate alternative.
 
 ```js
-expect( new Element( { n: 0 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 1 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 3 , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 1 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 3 , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
 
-expect( new Element( { n: 0 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 1 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { n: 2 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
-expect( new Element( { n: 3 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 0 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 1 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { n: 2 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
+expect( new Atom( { n: 3 , g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
 
-expect( new Element( { n: 0 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( new Element( { n: 1 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( new Element( { n: 2 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
-expect( new Element( { n: 3 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+expect( new Atom( { n: 0 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Atom( { n: 1 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Atom( { n: 2 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
+expect( new Atom( { n: 3 , g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "juments" ) ;
 
-expect( new Element( { g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
-expect( new Element( { g: 'n' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
-expect( new Element( { g: 'h' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'm' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'f' , k: "horse" } ).solve( babelFr ) ).to.be( "jument" ) ;
+expect( new Atom( { g: 'n' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { g: 'h' , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 
-expect( new Element( { k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
+expect( new Atom( { k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 ```
 
 <a name="units-of-measurement"></a>
@@ -227,68 +227,68 @@ expect( new Element( { k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 using an enumeration of natural positive integer units.
 
 ```js
-expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
 	.to.be( '1km 4m' ) ;
-expect( Element.parse( "[n:1004/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:1004/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1km and 4m' ) ;
-expect( Element.parse( "[n:1/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:1/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 inch' ) ;
-expect( Element.parse( "[n:3/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:3/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '3 inches' ) ;
-expect( Element.parse( "[n:12/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:12/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 foot' ) ;
-expect( Element.parse( "[n:24/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:24/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet' ) ;
-expect( Element.parse( "[n:25/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:25/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet and 1 inch' ) ;
-expect( Element.parse( "[n:27/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:27/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '2 feet and 3 inches' ) ;
-expect( Element.parse( "[n:50/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:50/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '1 yard, 1 foot and 2 inches' ) ;
 // 10km
-expect( Element.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
+expect( Atom.parse( "[n:393700.7874015748/uv:63360|36|12|1/uf:$ mile$[n?|s]|$ yard$[n?|s]|$ $[n?foot|feet]|$ inch$[n?|es]/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
 	.to.be( '6 miles, 376 yards and 4 inches' ) ;
 ```
 
 using a real of the closest unit.
 
 ```js
-expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.8km' ) ;
-expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.6km' ) ;
-expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '5hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.6km' ) ;
-expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '500m' ) ;
-expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
+expect( Atom.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 	.to.be( '0.2m' ) ;
 ```
 
 using a real >= 1 (when possible) of the closest unit.
 
 ```js
-expect( Element.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '1.2km' ) ;
-expect( Element.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:800/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '8hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:600/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '6hm' ) ;
-expect( Element.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:500/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '5hm' ) ;
-expect( Element.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:600/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '600m' ) ;
-expect( Element.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:500/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '500m' ) ;
-expect( Element.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
+expect( Atom.parse( "[n:0.2/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 	.to.be( '0.2m' ) ;
 ```
 
@@ -409,15 +409,15 @@ expect( babel.solve( "There is an $1[n:1]..." , { "n?": [ "horse" , "horses" ] }
 expect( babel.solve( "There are $1[n:2]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 expect( babel.solve( "There are $1[n:many]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 
-var element = new Element( { "n?": [ "horse" , "horses" ] } ) ;
-expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
-expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
-expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
+var atom = new Atom( { "n?": [ "horse" , "horses" ] } ) ;
+expect( babel.solve( "There is an $1[n:1]..." , atom ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , atom ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , atom ) ).to.be( "There are horses..." ) ;
 
-element = Element.parse( "[n?horse|horses]" ) ;
-expect( babel.solve( "There is an $1[n:1]..." , element ) ).to.be( "There is an horse..." ) ;
-expect( babel.solve( "There are $1[n:2]..." , element ) ).to.be( "There are horses..." ) ;
-expect( babel.solve( "There are $1[n:many]..." , element ) ).to.be( "There are horses..." ) ;
+atom = Atom.parse( "[n?horse|horses]" ) ;
+expect( babel.solve( "There is an $1[n:1]..." , atom ) ).to.be( "There is an horse..." ) ;
+expect( babel.solve( "There are $1[n:2]..." , atom ) ).to.be( "There are horses..." ) ;
+expect( babel.solve( "There are $1[n:many]..." , atom ) ).to.be( "There are horses..." ) ;
 ```
 
 should format things using the 'n0g?' notation.
@@ -506,23 +506,23 @@ expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!"
 expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
 ```
 
-escape inside element bracket.
+escape inside atom bracket.
 
 ```js
 var babel = new Babel() ;
 
-expect( Element.parse( "element[default:pears/n:2]!" ) ).to.eql( {
-	k: "element" ,
+expect( Atom.parse( "atom[default:pears/n:2]!" ) ).to.eql( {
+	k: "atom" ,
 	d: "pears" ,
 	n: 2
 } ) ;
 
-expect( Element.parse( "element[default:pears and\\/or apples]!" ) ).to.eql( {
-	k: "element" ,
+expect( Atom.parse( "atom[default:pears and\\/or apples]!" ) ).to.eql( {
+	k: "atom" ,
 	d: "pears and/or apples"
 } ) ;
 
-expect( Element.parse( "num[n?one\\|1|two\\|2]" ) ).to.eql( {
+expect( Atom.parse( "num[n?one\\|1|two\\|2]" ) ).to.eql( {
 	k: "num" ,
 	alt: [ "one|1" , "two|2" ] ,
 	ord: ['n']
@@ -674,7 +674,7 @@ babel.extend( {
 			"Give me an $1!" : "Donne-moi $1[g?un|une] $1!" ,
 			"I like $1[n:many]!" : "J'aime les $1[n:many]!"
 		} ,
-		elements: {
+		atoms: {
 			apple: { g:'f', "n?": [ 'pomme' , 'pommes' ] } ,
 			horse: { g:'m', "n?": [ 'cheval' , 'chevaux' ] } ,
 		}
@@ -748,7 +748,7 @@ babel.extend( {
 			"I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." :
 				"Je $1[n0?ne |]veux $1[n0?rien|quelque chose: |deux choses: |plusieurs choses: ]$1[enum:|$[ng?(un|une)|(des)] $|, $[ng?(un|une)|(des)] $| et $[ng?(un|une)|(des)] $]."
 		} ,
-		elements: {
+		atoms: {
 			"pear": { "n?": [ 'poire' , 'poires' ] , g: 'f' } ,
 			"banana": { "n?": [ 'banane' , 'bananes' ] , g: 'f' } ,
 			"strawberry": { "n?": [ 'fraise' , 'fraises' ] , g: 'f' }
@@ -774,10 +774,10 @@ expect( babelFr.solve( sentence , [ { k:"pear" , n:'many' } , "banana" ] ) ).to.
 
 <a name="advanced-feature-reference-operator"></a>
 # Advanced feature: reference operator
-using reference operator that point to an element should extend the current element/part.
+using reference operator that point to an atom should extend the current atom/part.
 
 ```js
-var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
+var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 
 expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
 
@@ -792,7 +792,7 @@ expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e 
 using reference operator stacked with other operators.
 
 ```js
-var e = Element.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
+var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 
 expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
 expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
@@ -815,7 +815,7 @@ babel.extend( {
 			"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
 			"$1[n:many//uc1]: I like that!": "$1[n:many//uc1]: j'adore ça!"
 		} ,
-		elements: {
+		atoms: {
 			apple: { g:'f', "n?": [ 'pomme' , 'pommes' ] } ,
 			pear: { g:'f', "n?": [ 'poire' , 'poires' ] }
 		}
@@ -921,7 +921,7 @@ babel.extend( {
 			"$1[//uc1], beautiful $1.": "$1[artDef//uc1]$1, $1[gel:(le beau|le bel)|(la belle)]$1." ,
 			"I want a $1.": "Je veux $1[artIndef]$1."
 		} ,
-		elements: {
+		atoms: {
 			tree: { "n?": [ "arbre" , "arbres" ] , g: 'm' } ,
 			oak: { "n?": [ "chêne" , "chênes" ] , g: 'm' } ,
 			flower: { "n?": [ "fleur" , "fleurs" ] , g: 'f' } ,
@@ -981,11 +981,11 @@ var babel = new Babel() ;
 
 var ctx = {
 	verbe: {
-		"être": Element.parse( "être[p?suis|es|est]" )
+		"être": Atom.parse( "être[p?suis|es|est]" )
 	} ,
 	sujet: {
-		moi: Element.parse( "[p:1/s:je]" ) ,
-		bob: Element.parse( "[s:Bob]" )
+		moi: Atom.parse( "[p:1/s:je]" ) ,
+		bob: Atom.parse( "[s:Bob]" )
 	}
 } ;
 
@@ -1008,9 +1008,9 @@ babel.extendLocale( {
 } ) ;
 
 var ctx = {
-	moi: Element.parse( "[p:1/s:je]" ) ,
-	alice: Element.parse( "[s:Alice/g:f]" ) ,
-	bob: Element.parse( "[s:Bob/g:m]" ) ,
+	moi: Atom.parse( "[p:1/s:je]" ) ,
+	alice: Atom.parse( "[s:Alice/g:f]" ) ,
+	bob: Atom.parse( "[s:Bob/g:m]" ) ,
 } ;
 
 ctx.people = [ ctx.alice , ctx.bob ] ;

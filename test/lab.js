@@ -31,7 +31,7 @@
 
 
 var Babel = require( '../lib/Babel.js' ) ;
-var Element = Babel.Element ;
+var Atom = Babel.Atom ;
 var Sentence = Babel.Sentence ;
 
 var string = require( 'string-kit' ) ;
@@ -57,11 +57,11 @@ describe( "Lab" , function() {
 		
 		var ctx = {
 			verbe: {
-				"être": Element.parse( "être[p?suis|es|est]" )
+				"être": Atom.parse( "être[p?suis|es|est]" )
 			} ,
 			sujet: {
-				moi: Element.parse( "[p:1/s:je]" ) ,
-				bob: Element.parse( "[s:Bob]" )
+				moi: Atom.parse( "[p:1/s:je]" ) ,
+				bob: Atom.parse( "[s:Bob]" )
 			}
 		} ;
 		
@@ -84,9 +84,9 @@ describe( "Lab" , function() {
 		} ) ;
 		
 		var ctx = {
-			moi: Element.parse( "[p:1/s:je]" ) ,
-			alice: Element.parse( "[s:Alice/g:f]" ) ,
-			bob: Element.parse( "[s:Bob/g:m]" ) ,
+			moi: Atom.parse( "[p:1/s:je]" ) ,
+			alice: Atom.parse( "[s:Alice/g:f]" ) ,
+			bob: Atom.parse( "[s:Bob/g:m]" ) ,
 		} ;
 		
 		ctx.people = [ ctx.alice , ctx.bob ] ;
