@@ -24,8 +24,6 @@
 	SOFTWARE.
 */
 
-
-
 "use strict" ;
 
 
@@ -35,12 +33,10 @@ var Atom = Babel.Atom ;
 var Sentence = Babel.Sentence ;
 
 var string = require( 'string-kit' ) ;
-var expect = require( 'expect.js' ) ;
 
 
 
-function deb( v )
-{
+function deb( v ) {
 	console.log( string.inspect( { style: 'color' , depth: 15 } , v ) ) ;
 }
 
@@ -70,19 +66,19 @@ describe( "Atom parser and solver" , function() {
 	var babelFr = babel.use( 'fr' ) ;
 	
 	it( "should parse an atom" , function() {
-		expect( Atom.parse( "horse" ) ).to.eql( { k: "horse" } ) ;
-		expect( Atom.parse( "[k:horse]" ) ).to.eql( { k: "horse" } ) ;
-		expect( Atom.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.eql( {
+		expect( Atom.parse( "horse" ) ).to.be.like( { k: "horse" } ) ;
+		expect( Atom.parse( "[k:horse]" ) ).to.be.like( { k: "horse" } ) ;
+		expect( Atom.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.be.like( {
 			k: "horse" ,
 			alt: [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] ,
 			ord: ['n','g']
 		} ) ;
-		expect( Atom.parse( "horse[n?cheval|chevaux]" ) ).to.eql( {
+		expect( Atom.parse( "horse[n?cheval|chevaux]" ) ).to.be.like( {
 			k: "horse" ,
 			alt: [ "cheval" , "chevaux" ] ,
 			ord: ['n']
 		} ) ;
-		expect( Atom.parse( "horse[g?cheval|jument]" ) ).to.eql( {
+		expect( Atom.parse( "horse[g?cheval|jument]" ) ).to.be.like( {
 			k: "horse" ,
 			alt: [ "cheval" , "jument" ] ,
 			ord: ['g']
@@ -90,11 +86,11 @@ describe( "Atom parser and solver" , function() {
 	} ) ;
 	
 	it( "creating an atom from a string should create a translatable Atom object" , function() {
-		expect( new Atom( "horse" ) ).to.eql( { k: "horse" } ) ;
+		expect( new Atom( "horse" ) ).to.be.like( { k: "horse" } ) ;
 	} ) ;
 	
 	it( "creating an atom from a number should create an Atom object with a 'n' (number) property" , function() {
-		expect( new Atom( 3 ) ).to.eql( { n: 3 } ) ;
+		expect( new Atom( 3 ) ).to.be.like( { n: 3 } ) ;
 	} ) ;
 	
 	it( "an Atom created from a string should resolve to itself when the atom is not in the dictionary" , function() {
@@ -250,7 +246,7 @@ describe( "Atom parser and solver" , function() {
 	
 	it.skip( "parse units" , function() {
 		deb( Atom.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ) ;
-		expect( Atom.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ).to.eql( {
+		expect( Atom.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ).to.be.like( {
 			n: "1" ,
 			uv: [ 1000 , 1 ] ,
 			uf: [ "$km" , "$m" ] ,
@@ -258,7 +254,7 @@ describe( "Atom parser and solver" , function() {
 			um: "N+"
 		} ) ;
 		
-		expect( Atom.parse( "[n:30/uv:12|1/uf:$ $[n?foot|feet]|$ $[n?inch|inches]/uenum:0|$|, $| and $/um:N+]" ) ).to.eql( {
+		expect( Atom.parse( "[n:30/uv:12|1/uf:$ $[n?foot|feet]|$ $[n?inch|inches]/uenum:0|$|, $| and $/um:N+]" ) ).to.be.like( {
 			n: "30" ,
 			uv: [ 12 , 1 ] ,
 			uf: [ "$ $[n?foot|feet]" , "$ $[n?inch|inches]" ] ,
@@ -527,18 +523,18 @@ describe( "Escape special character" , function() {
 	it( "escape inside atom bracket" , function() {
 		var babel = new Babel() ;
 		
-		expect( Atom.parse( "atom[default:pears/n:2]!" ) ).to.eql( {
+		expect( Atom.parse( "atom[default:pears/n:2]!" ) ).to.be.like( {
 			k: "atom" ,
 			d: "pears" ,
-			n: 2
+			n: '2'
 		} ) ;
 		
-		expect( Atom.parse( "atom[default:pears and\\/or apples]!" ) ).to.eql( {
+		expect( Atom.parse( "atom[default:pears and\\/or apples]!" ) ).to.be.like( {
 			k: "atom" ,
 			d: "pears and/or apples"
 		} ) ;
 		
-		expect( Atom.parse( "num[n?one\\|1|two\\|2]" ) ).to.eql( {
+		expect( Atom.parse( "num[n?one\\|1|two\\|2]" ) ).to.be.like( {
 			k: "num" ,
 			alt: [ "one|1" , "two|2" ] ,
 			ord: ['n']
@@ -897,12 +893,12 @@ describe( "Post-filters" , function() {
 describe( "Misc" , function() {
 	
 	it( "should extract the named variables from the format string" , function() {
-		expect( Babel.getNamedVars( "Hello bob" ) ).to.eql( [] ) ;
-		expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.eql( [ 'friend' ] ) ;
-		expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.eql( [ 'first' , 'second' ] ) ;
-		expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $ and ${second} love $$..." ) ).to.eql( [ 'first' , 'second' ] ) ;
-		expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.eql( [ 'person.name' , 'person2.name' ] ) ;
-		expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.eql( [ 'first' , 'second' ] ) ;
+		expect( Babel.getNamedVars( "Hello bob" ) ).to.equal( [] ) ;
+		expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.equal( [ 'friend' ] ) ;
+		expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.equal( [ 'first' , 'second' ] ) ;
+		expect( Babel.getNamedVars( "Hello $1, ${first}, $2, $ and ${second} love $$..." ) ).to.equal( [ 'first' , 'second' ] ) ;
+		expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.equal( [ 'person.name' , 'person2.name' ] ) ;
+		expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.equal( [ 'first' , 'second' ] ) ;
 	} ) ;
 		
 	it( "edge cases" , function() {

@@ -24,8 +24,6 @@
 	SOFTWARE.
 */
 
-
-
 "use strict" ;
 
 
@@ -35,12 +33,10 @@ var Atom = Babel.Atom ;
 var Sentence = Babel.Sentence ;
 
 var string = require( 'string-kit' ) ;
-var expect = require( 'expect.js' ) ;
 
 
 
-function deb( v )
-{
+function deb( v ) {
 	console.log( string.inspect( { style: 'color' , depth: 15 } , v ) ) ;
 }
 
