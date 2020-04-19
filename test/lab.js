@@ -28,11 +28,11 @@
 
 
 
-var Babel = require( '../lib/Babel.js' ) ;
-var Atom = Babel.Atom ;
-var Sentence = Babel.Sentence ;
+const Babel = require( '../lib/Babel.js' ) ;
+const Atom = Babel.Atom ;
+const Sentence = Babel.Sentence ;
 
-var string = require( 'string-kit' ) ;
+const string = require( 'string-kit' ) ;
 
 
 
@@ -42,15 +42,11 @@ function deb( v ) {
 
 
 
-			/* Tests */
+describe( "Lab" , () => {
 
-
-
-describe( "Lab" , function() {
-	
-	it( "using reference operator as verb" , function() {
+	it( "using reference operator as verb" , () => {
 		var babel = new Babel() ;
-		
+
 		var ctx = {
 			verbe: {
 				"être": Atom.parse( "être[p?suis|es|est]" )
@@ -60,15 +56,13 @@ describe( "Lab" , function() {
 				bob: Atom.parse( "[s:Bob]" )
 			}
 		} ;
-		
+
 		expect( babel.solve( "${sujet.moi//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Je suis content!" ) ;
 		expect( babel.solve( "${sujet.bob//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Bob est content!" ) ;
 		expect( babel.solve( "Tu ${sujet.bob}[$:verbe.être/p:2] content!" , ctx ) ).to.be( "Tu es content!" ) ;
 	} ) ;
 	
-	
-	
-	it( "using a function as verb" , function() {
+	it( "using a function as verb" , () => {
 		var babel = new Babel() ;
 		
 		babel.extendLocale( {

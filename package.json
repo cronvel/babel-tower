@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "kung-fig-ref": "^0.42.5",
-    "string-kit": "^0.9.12"
+    "string-kit": "^0.11.7"
   },
   "devDependencies": {
     "number-to-words": "^1.2.4"

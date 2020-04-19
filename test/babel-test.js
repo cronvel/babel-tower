@@ -28,11 +28,11 @@
 
 
 
-var Babel = require( '../lib/Babel.js' ) ;
-var Atom = Babel.Atom ;
-var Sentence = Babel.Sentence ;
+const Babel = require( '../lib/Babel.js' ) ;
+const Atom = Babel.Atom ;
+const Sentence = Babel.Sentence ;
 
-var string = require( 'string-kit' ) ;
+const string = require( 'string-kit' ) ;
 
 
 
@@ -42,12 +42,7 @@ function deb( v ) {
 
 
 
-			/* Tests */
-
-
-
-describe( "Atom parser and solver" , function() {
-	
+describe( "Atom parser and solver" , () => {
 	var babel = new Babel() ;
 	var atom ;
 	
@@ -64,8 +59,9 @@ describe( "Atom parser and solver" , function() {
 	} ) ;
 	
 	var babelFr = babel.use( 'fr' ) ;
-	
-	it( "should parse an atom" , function() {
+
+
+	it( "should parse an atom" , () => {
 		expect( Atom.parse( "horse" ) ).to.be.like( { k: "horse" } ) ;
 		expect( Atom.parse( "[k:horse]" ) ).to.be.like( { k: "horse" } ) ;
 		expect( Atom.parse( "horse[ng?(cheval|jument)|(chevaux|juments)]" ) ).to.be.like( {
@@ -85,23 +81,23 @@ describe( "Atom parser and solver" , function() {
 		} ) ;
 	} ) ;
 	
-	it( "creating an atom from a string should create a translatable Atom object" , function() {
+	it( "creating an atom from a string should create a translatable Atom object" , () => {
 		expect( new Atom( "horse" ) ).to.be.like( { k: "horse" } ) ;
 	} ) ;
 	
-	it( "creating an atom from a number should create an Atom object with a 'n' (number) property" , function() {
+	it( "creating an atom from a number should create an Atom object with a 'n' (number) property" , () => {
 		expect( new Atom( 3 ) ).to.be.like( { n: 3 } ) ;
 	} ) ;
 	
-	it( "an Atom created from a string should resolve to itself when the atom is not in the dictionary" , function() {
+	it( "an Atom created from a string should resolve to itself when the atom is not in the dictionary" , () => {
 		expect( new Atom( "horse" ).solve( babel ) ).to.be( "horse" ) ;
 	} ) ;
 	
-	it( "an Atom created from a string should resolve to the atom existing in the dictionary" , function() {
+	it( "an Atom created from a string should resolve to the atom existing in the dictionary" , () => {
 		expect( new Atom( "apple" ).solve( babelFr ) ).to.be( "pomme" ) ;
 	} ) ;
 	
-	it( "an Atom created directly with 'alt' and 'ord'" , function() {
+	it( "an Atom created directly with 'alt' and 'ord'" , () => {
 		expect( new Atom( { g: 'm' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { g: 'f' , ord: ['g'] , alt: [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
 		
@@ -142,7 +138,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { p: '3' , n: 2 , g: 'f' , ord: ord , alt: npg } ).solve( babel ) ).to.be( "elles" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'n' and 'n?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'n' and 'n?' should resolve to the appropriate alternative" , () => {
 		expect( new Atom( { n: 0 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 		expect( new Atom( { n: 1 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 		expect( new Atom( { n: 2 , "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horses" ) ;
@@ -151,7 +147,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { "n?": [ "horse" , "horses" ] } ).solve( babel ) ).to.be( "horse" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'p' and 'p?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'p' and 'p?' should resolve to the appropriate alternative" , () => {
 		expect( new Atom( { p: '1' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "je" ) ;
 		expect( new Atom( { p: '2' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "tu" ) ;
 		expect( new Atom( { p: '3' , "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
@@ -159,14 +155,14 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { "p?": [ "je" , "tu" , "il" ] } ).solve( babel ) ).to.be( "il" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'u' and 'u?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'u' and 'u?' should resolve to the appropriate alternative" , () => {
 		expect( new Atom( { u: 'c' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
 		expect( new Atom( { u: 'p' , "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "Misty" ) ;
 		
 		expect( new Atom( { "u?": [ "cat" , "Misty" ] } ).solve( babel ) ).to.be( "cat" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'g' and 'g?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'g' and 'g?' should resolve to the appropriate alternative" , () => {
 		expect( new Atom( { g: 'm' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { g: 'f' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "jument" ) ;
 		expect( new Atom( { g: 'n' , "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
@@ -175,7 +171,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { "g?": [ "cheval" , "jument" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'n' and/or 'g' and 'ng?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'n' and/or 'g' and 'ng?' should resolve to the appropriate alternative" , () => {
 		expect( new Atom( { n: 0 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 1 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 2 , g: 'm' , "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "chevaux" ) ;
@@ -197,7 +193,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { "ng?": [ [ "cheval" , "jument" ] , [ "chevaux" , "juments" ] ] } ).solve( babel ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'n', 'p', 'g' and 'npg?' should resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'n', 'p', 'g' and 'npg?' should resolve to the appropriate alternative" , () => {
 		var npg = [
 			[
 				[ "je" ] ,
@@ -220,7 +216,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { p: '3' , n: 2 , g: 'f' , "npg?": npg } ).solve( babel ) ).to.be( "elles" ) ;
 	} ) ;
 	
-	it( "an Atom created with a 'n' and/or 'g' and 'k' should extend the atom existing in the dictionary with 'n' and resolve to the appropriate alternative" , function() {
+	it( "an Atom created with a 'n' and/or 'g' and 'k' should extend the atom existing in the dictionary with 'n' and resolve to the appropriate alternative" , () => {
 		expect( new Atom( { n: 0 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 1 , k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 2 , k: "horse" } ).solve( babelFr ) ).to.be( "chevaux" ) ;
@@ -244,7 +240,7 @@ describe( "Atom parser and solver" , function() {
 		expect( new Atom( { k: "horse" } ).solve( babelFr ) ).to.be( "cheval" ) ;
 	} ) ;
 	
-	it.skip( "parse units" , function() {
+	it.skip( "parse units" , () => {
 		deb( Atom.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ) ;
 		expect( Atom.parse( "[n:1/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ) ).to.be.like( {
 			n: "1" ,
@@ -266,11 +262,10 @@ describe( "Atom parser and solver" , function() {
 
 
 
-describe( "Units of measurement" , function() {
-	
+describe( "Units of measurement" , () => {
 	var babel = new Babel() ;
 	
-	it( "using an enumeration of natural positive integer units" , function() {
+	it( "using an enumeration of natural positive integer units" , () => {
 		expect( Atom.parse( "[n:1004/uv:1000|1/uf:$km|$m/um:N+]" ).solve( babel ) )
 			.to.be( '1km 4m' ) ;
 		expect( Atom.parse( "[n:1004/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:N+]" ).solve( babel ) )
@@ -294,7 +289,7 @@ describe( "Units of measurement" , function() {
 			.to.be( '6 miles, 376 yards and 4 inches' ) ;
 	} ) ;
 	
-	it( "using a real of the closest unit" , function() {
+	it( "using a real of the closest unit" , () => {
 		expect( Atom.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
 		expect( Atom.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R]" ).solve( babel ) )
@@ -313,7 +308,7 @@ describe( "Units of measurement" , function() {
 			.to.be( '0.2m' ) ;
 	} ) ;
 	
-	it( "using a real >= 1 (when possible) of the closest unit" , function() {
+	it( "using a real >= 1 (when possible) of the closest unit" , () => {
 		expect( Atom.parse( "[n:1200/uv:1000|1/uf:$km|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
 			.to.be( '1.2km' ) ;
 		expect( Atom.parse( "[n:1200/uv:1000|100|1/uf:$km|$hm|$m/uenum:0|$|, $| and $/um:R1+]" ).solve( babel ) )
@@ -335,14 +330,14 @@ describe( "Units of measurement" , function() {
 
 
 
-describe( "Basic usage without language pack" , function() {
+describe( "Basic usage without language pack" , () => {
 	
-	it( "should format $$ into $" , function() {
+	it( "should format $$ into $" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "Give me $$!" ) ).to.be( "Give me $!" ) ;
 	} ) ;
 	
-	it( "single $ behaviour should default to the first argument or to the last used argument+path" , function() {
+	it( "single $ behaviour should default to the first argument or to the last used argument+path" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $!" , "apples" , "pears" ) ).to.be( "Give me apples!" ) ;
@@ -360,7 +355,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me ${fruit1}[//uc] and $[//uc1]!" , ctx ) ).to.be( "Give me APPLES and Apples!" ) ;
 	} ) ;
 	
-	it( "variable as number" , function() {
+	it( "variable as number" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 apple!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
@@ -369,14 +364,14 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $1 apples!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 	
-	it( "variable as boolean" , function() {
+	it( "variable as boolean" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "This is $1!" , true ) ).to.be( "This is true!" ) ;
 		expect( babel.solve( "This is $1!" , false ) ).to.be( "This is false!" ) ;
 	} ) ;
 	
-	it( "should format things using the 'n?' notation" , function() {
+	it( "should format things using the 'n?' notation" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 0 ) ).to.be( "Give me 0 apple!" ) ;
@@ -385,7 +380,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 	
-	it( "should format things using the 'b?' notation" , function() {
+	it( "should format things using the 'b?' notation" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
@@ -401,14 +396,14 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , '0' ) ).to.be( "This is a lie!" ) ;
 	} ) ;
 	
-	it( "should format things using the '?' (alias of 'n?') notation" , function() {
+	it( "should format things using the '?' (alias of 'n?') notation" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "This is $1[?the truth|a lie]!" , true ) ).to.be( "This is the truth!" ) ;
 		expect( babel.solve( "This is $1[?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
 	} ) ;
 
-	it( "should format things using the 'ng?' notation" , function() {
+	it( "should format things using the 'ng?' notation" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "J'aime $1[ng?(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
@@ -419,14 +414,14 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "J'aime $1[ng?(le|la)] $1[ng?(cheval|jument)]!" , {g:'f'} ) ).to.be( "J'aime la jument!" ) ;
 	} ) ;
 	
-	it( "should format things using the 'n0?' notation" , function() {
+	it( "should format things using the 'n0?' notation" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 0 ) ).to.be( "There is no horse..." ) ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 1 ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There $1[n?is|are] $1[n0?no|an|many] horse$1[n?|s]..." , 2 ) ).to.be( "There are many horses..." ) ;
 	} ) ;
 	
-	it( "should format things using the 'n?' notation" , function() {
+	it( "should format things using the 'n?' notation" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "There is an $1[n:1]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There are $1[n:2]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
@@ -443,7 +438,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "There are $1[n:many]..." , atom ) ).to.be( "There are horses..." ) ;
 	} ) ;
 	
-	it( "should format things using the 'n0g?' notation" , function() {
+	it( "should format things using the 'n0g?' notation" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , 3 ) ).to.be( "J'aime les chevaux!" ) ;
@@ -454,7 +449,14 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "J'aime $1[n0g?(aucun|aucune)|(le|la)|(les)] $1[ng?(cheval|jument)|(chevaux|juments)]!" , {n:0,g:'f'} ) ).to.be( "J'aime aucune jument!" ) ;
 	} ) ;
 	
-	it( "should work with objects, using the path syntax" , function() {
+	it( "should format things using the 'u?' notation" , () => {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "$1[u?The |]$ jumps on the table!" , Atom.parse( "cat[u:c]" ) ) ).to.be( "The cat jumps on the table!" ) ;
+		expect( babel.solve( "$1[u?The |]$ jumps on the table!" , Atom.parse( "Misty[u:p]" ) ) ).to.be( "Misty jumps on the table!" ) ;
+	} ) ;
+	
+	it( "should work with objects, using the path syntax" , () => {
 		var babel = new Babel() ;
 		
 		var data = {
@@ -467,7 +469,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Hello $1{bob.firstName} $1{bob.lastName} and $1{alice.firstName} $1{alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
 	} ) ;
 	
-	it( "$ without number should use the first arg, just like $1" , function() {
+	it( "$ without number should use the first arg, just like $1" , () => {
 		var babel = new Babel() ;
 		
 		var data = {
@@ -478,7 +480,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Hello ${bob.firstName} ${bob.lastName} and ${alice.firstName} ${alice.lastName}!" , data ) ).to.be( "Hello Bobby Fischer and Alice M.!" ) ;
 	} ) ;
 	
-	it( "undefined values for missing variable index/path" , function() {
+	it( "undefined values for missing variable index/path" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 and $3!" , "apples" , "pears" ) ).to.be( "Give me apples and (undefined)!" ) ;
@@ -493,7 +495,7 @@ describe( "Basic usage without language pack" , function() {
 		expect( babel.solve( "Give me ${fruit}[//uc1] and ${excellentFruit}[//uc]!" , ctx ) ).to.be( "Give me Apples and (UNDEFINED)!" ) ;
 	} ) ;
 	
-	it( "default values for missing variable index/path" , function() {
+	it( "default values for missing variable index/path" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $1 and $3[d:strawberries]!" , "apples" , "pears" ) ).to.be( "Give me apples and strawberries!" ) ;
@@ -511,16 +513,16 @@ describe( "Basic usage without language pack" , function() {
 
 
 
-describe( "Escape special character" , function() {
+describe( "Escape special character" , () => {
 	
-	it( "escape inside sentence bracket" , function() {
+	it( "escape inside sentence bracket" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "Give me $[default:pears/n:2]!" ) ).to.be( "Give me pears!" ) ;
 		expect( babel.solve( "Give me $[default:pears and\\/or apples]!" ) ).to.be( "Give me pears and/or apples!" ) ;
 	} ) ;
 	
-	it( "escape inside atom bracket" , function() {
+	it( "escape inside atom bracket" , () => {
 		var babel = new Babel() ;
 		
 		expect( Atom.parse( "atom[default:pears/n:2]!" ) ).to.be.like( {
@@ -547,9 +549,9 @@ describe( "Escape special character" , function() {
 
 
 
-describe( "Sentence instances" , function() {
+describe( "Sentence instances" , () => {
 		
-	it( "Basic sentence" , function() {
+	it( "Basic sentence" , () => {
 		var sentence = new Sentence( "Give me $1 apple$1[n?|s]!" ) ;
 		
 		expect( sentence.toString( 0 ) ).to.be( "Give me 0 apple!" ) ;
@@ -558,7 +560,7 @@ describe( "Sentence instances" , function() {
 		expect( sentence.toString( 3 ) ).to.be( "Give me 3 apples!" ) ;
 	} ) ;
 		
-	it( ".toStringKFG()" , function() {
+	it( ".toStringKFG()" , () => {
 		var sentence = new Sentence( "I like ${name}!" ) ;
 		
 		expect( sentence.toStringKFG( { name: 'strawberries' } ) ).to.be( "I like strawberries!" ) ;
@@ -567,9 +569,9 @@ describe( "Sentence instances" , function() {
 
 
 
-describe( "Basic usage with language pack" , function() {
+describe( "Basic usage with language pack" , () => {
 	
-	it( "should format and localize" , function() {
+	it( "should format and localize" , () => {
 		var babel = new Babel() ;
 		
 		// Load a pseudo DB
@@ -611,9 +613,9 @@ describe( "Basic usage with language pack" , function() {
 
 
 
-describe( "Language pack and functions" , function() {
+describe( "Language pack and functions" , () => {
 	
-	it( "should format and localize, using language functions" , function() {
+	it( "should format and localize, using language functions" , () => {
 		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -675,7 +677,7 @@ describe( "Language pack and functions" , function() {
 		
 	} ) ;
 	
-	it( "should format and localize, and localize translatable variables" , function() {
+	it( "should format and localize, and localize translatable variables" , () => {
 		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -706,26 +708,26 @@ describe( "Language pack and functions" , function() {
 
 
 
-describe( "Advanced feature: list and enumeration" , function() {
+describe( "Advanced feature: list and enumeration" , () => {
 	
-	it( "basic enumeration with no rules should simply join with a space" , function() {
+	it( "basic enumeration with no rules should simply join with a space" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum]." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want apple pear orange." ) ;
 	} ) ;
 	
 	// TODO...
-	it.skip( "array and no enum behavior" , function() {
+	it.skip( "array and no enum behavior" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "I want $1." , [ "apple" , "pear" , "orange" ] ) ).to.be( "I want ???." ) ;
 	} ) ;
 	
-	it( "when a string is given instead of an array, it should be equivalent to an array of the given string" , function() {
+	it( "when a string is given instead of an array, it should be equivalent to an array of the given string" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum]." , "apple" ) ).to.be( "I want apple." ) ;
 		expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 	} ) ;
 	
-	it( "enumeration with variable length" , function() {
+	it( "enumeration with variable length" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" ] ) ).to.be( "I want apples." ) ;
@@ -734,7 +736,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [ "apples" , "pears" , "oranges" , "strawberries" ] ) ).to.be( "I want apples, pears, oranges and strawberries." ) ;
 	} ) ;
 	
-	it( "the array length should be used as n" , function() {
+	it( "the array length should be used as n" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "I want $1[n0?nothing|something|two things|many things]." , [] ) ).to.be( "I want nothing." ) ;
@@ -748,7 +750,7 @@ describe( "Advanced feature: list and enumeration" , function() {
 		expect( babel.solve( "I want $1[n0?nothing|something: |two things: |many things: ]$1[enum:|a $|, a $| and a $]." , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "I want many things: a pear, a banana and a strawberry." ) ;
 	} ) ;
 	
-	it( "enumeration with variable length, translation and operators in enumeration" , function() {
+	it( "enumeration with variable length, translation and operators in enumeration" , () => {
 		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -789,11 +791,11 @@ describe( "Advanced feature: list and enumeration" , function() {
 
 
 
-describe( "Advanced feature: reference operator" , function() {
+describe( "Advanced feature: reference operator" , () => {
 	
 	var babel = new Babel() ;
 	
-	it( "using reference operator that point to an atom should extend the current atom/part" , function() {
+	it( "using reference operator that point to an atom should extend the current atom/part" , () => {
 		var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
 		expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
@@ -806,7 +808,7 @@ describe( "Advanced feature: reference operator" , function() {
 		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
 	} ) ;
 	
-	it( "using reference operator stacked with other operators" , function() {
+	it( "using reference operator stacked with other operators" , () => {
 		var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
 		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
@@ -817,9 +819,9 @@ describe( "Advanced feature: reference operator" , function() {
 
 
 
-describe( "Post-filters" , function() {
+describe( "Post-filters" , () => {
 	
-	it( "should apply post-filters 'uc1' (upper-case first letter)" , function() {
+	it( "should apply post-filters 'uc1' (upper-case first letter)" , () => {
 		var babel = new Babel() ;
 		var babelFr = babel.use( 'fr' ) ;
 		
@@ -850,7 +852,7 @@ describe( "Post-filters" , function() {
 		expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.be( "Apple: I like that!" ) ;
 	} ) ;
 	
-	it( "should apply post-filters various filters combination" , function() {
+	it( "should apply post-filters various filters combination" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
@@ -864,7 +866,7 @@ describe( "Post-filters" , function() {
 		expect( babel.solve( "echo ${arg//shellarg}" , { arg: "with single ' quote" } ) ).to.be( "echo 'with single '\\'' quote'" ) ;
 	} ) ;
 	
-	it( "should apply english post-filters" , function() {
+	it( "should apply english post-filters" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
@@ -876,7 +878,7 @@ describe( "Post-filters" , function() {
 		expect( babel.solve( "You take ${noun//en:the}." , { noun: "apple" } ) ).to.be( "You take the apple." ) ;
 	} ) ;
 	
-	it( "should apply path post-filters" , function() {
+	it( "should apply path post-filters" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "$[//extname]" , "README.md" ) ).to.be( ".md" ) ;
 		expect( babel.solve( "$[//extname]" , "~/somedir/README.md" ) ).to.be( ".md" ) ;
@@ -890,9 +892,9 @@ describe( "Post-filters" , function() {
 
 
 
-describe( "Misc" , function() {
+describe( "Misc" , () => {
 	
-	it( "should extract the named variables from the format string" , function() {
+	it( "should extract the named variables from the format string" , () => {
 		expect( Babel.getNamedVars( "Hello bob" ) ).to.equal( [] ) ;
 		expect( Babel.getNamedVars( "Hello ${friend}" ) ).to.equal( [ 'friend' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${first} and ${second}" ) ).to.equal( [ 'first' , 'second' ] ) ;
@@ -900,8 +902,8 @@ describe( "Misc" , function() {
 		expect( Babel.getNamedVars( "Hello ${person.name} and ${person2.name}" ) ).to.equal( [ 'person.name' , 'person2.name' ] ) ;
 		expect( Babel.getNamedVars( "Hello ${first} and ${second}, glad to meet you ${first}" ) ).to.equal( [ 'first' , 'second' ] ) ;
 	} ) ;
-		
-	it( "edge cases" , function() {
+
+	it( "edge cases" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "--'${content}'--" , { content: new String( 'content' ) } ) ).to.be( "--'content'--" ) ;
 		
@@ -915,23 +917,43 @@ describe( "Misc" , function() {
 
 
 
-describe( "'en'/'fr' core langpack features" , function() {
+describe( "Core langpack features" , () => {
 	
-	it( "testing few features" , function() {
+	describe( "'en' core langpack" , () => {
+		it( "Definite/indefinite article" , () => {
+			var babel = new Babel() ;
+			var babelEn = babel.use( 'en' ) ;
+
+			babel.extend( require( '../lib/en.js' ) ) ;
+
+			expect( babelEn.solve( "$1[ia//uc1] jumps on the table!" , Atom.parse( "cat[u:c]" ) ) ).to.be( "A cat jumps on the table!" ) ;
+			expect( babelEn.solve( "$1[ia//uc1] jumps on the table!" , Atom.parse( "animal[u:c]" ) ) ).to.be( "An animal jumps on the table!" ) ;
+			expect( babelEn.solve( "$1[ia//uc1] jumps on the table!" , Atom.parse( "Misty[u:p]" ) ) ).to.be( "Misty jumps on the table!" ) ;
+
+			expect( babelEn.solve( "$1[da//uc1] jumps on the table!" , Atom.parse( "cat[u:c]" ) ) ).to.be( "The cat jumps on the table!" ) ;
+			expect( babelEn.solve( "$1[da//uc1] jumps on the table!" , Atom.parse( "animal[u:c]" ) ) ).to.be( "The animal jumps on the table!" ) ;
+			expect( babelEn.solve( "$1[da//uc1] jumps on the table!" , Atom.parse( "Misty[u:p]" ) ) ).to.be( "Misty jumps on the table!" ) ;
+
+			expect( babelEn.solve( "$1[ia//uc1] jump on the table!" , Atom.parse( "animals[u:c/n:many]" ) ) ).to.be( "Animals jump on the table!" ) ;
+			expect( babelEn.solve( "$1[da//uc1] jump on the table!" , Atom.parse( "animals[u:c/n:many]" ) ) ).to.be( "The animals jump on the table!" ) ;
+		} ) ;
+	} ) ;
+
+	it( "testing few features" , () => {
 		var babel = new Babel() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
-		
+
 		babel.extend( require( '../lib/en.js' ) ) ;
 		babel.extend( require( '../lib/fr.js' ) ) ;
 		
 		babel.extend( {
 			fr: {
 				sentences: {
-					"$1[1stPerson//uc1] $1[n?am|are] happy.": "$1[1erePersonne//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
-					"$1[3rdPerson//uc1] $1[n?is|are] happy.": "$1[3emePersonne//uc1] $1[n?est|sont] content$1[n?|s]." ,
-					"$1[//uc1], beautiful $1.": "$1[artDef//uc1]$1, $1[gel:(le beau|le bel)|(la belle)]$1." ,
-					"I want a $1.": "Je veux $1[artIndef]$1."
+					"$1[1p//uc1] $1[n?am|are] happy.": "$1[1p//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
+					"$1[3p//uc1] $1[n?is|are] happy.": "$1[3p//uc1] $1[n?est|sont] content$1[n?|s]." ,
+					"$1[//uc1], beautiful $1.": "$1[ad//uc1]$1, $1[gel:(le beau|le bel)|(la belle)]$1." ,
+					"I want a $1.": "Je veux $1[ai]$1."
 				} ,
 				atoms: {
 					tree: { "n?": [ "arbre" , "arbres" ] , g: 'm' } ,
@@ -942,15 +964,15 @@ describe( "'en'/'fr' core langpack features" , function() {
 			}
 		} ) ;
 		
-		expect( babelEn.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "I am happy." ) ;
-		expect( babelEn.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "We are happy." ) ;
-		expect( babelEn.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "It is happy." ) ;
-		expect( babelEn.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "They are happy." ) ;
+		expect( babelEn.solve( "$1[1p//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "I am happy." ) ;
+		expect( babelEn.solve( "$1[1p//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "We are happy." ) ;
+		expect( babelEn.solve( "$1[3p//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "It is happy." ) ;
+		expect( babelEn.solve( "$1[3p//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "They are happy." ) ;
 		
-		expect( babelFr.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "Je suis content." ) ;
-		expect( babelFr.solve( "$1[1stPerson//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "Nous sommes contents." ) ;
-		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
-		expect( babelFr.solve( "$1[3rdPerson//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
+		expect( babelFr.solve( "$1[1p//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "Je suis content." ) ;
+		expect( babelFr.solve( "$1[1p//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "Nous sommes contents." ) ;
+		expect( babelFr.solve( "$1[3p//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
+		expect( babelFr.solve( "$1[3p//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
 		
 		expect( babelEn.solve( "$1[//uc1], beautiful $1." , "tree" ) ).to.be( "Tree, beautiful tree." ) ;
 		
@@ -969,9 +991,9 @@ describe( "'en'/'fr' core langpack features" , function() {
 
 
 
-describe( "String-kit's format() interoperability" , function() {
+describe( "String-kit's format() interoperability" , () => {
 	
-	it( "should escape argument using the autoEscape regexp" , function() {
+	it( "should escape argument using the autoEscape regexp" , () => {
 		var babel , regex ;
 		
 		babel = new Babel() ;
@@ -984,6 +1006,5 @@ describe( "String-kit's format() interoperability" , function() {
 		expect( babel.solve( "Give me ^g^/$^:!" , 'apple' ) ).to.be( "Give me ^g^/apple^:!" ) ;
 		expect( babel.solve( "Give me ^g^/$^:!" , 'app^le' ) ).to.be( "Give me ^g^/app^^le^:!" ) ;
 	} ) ;
-	
 } ) ;
 
