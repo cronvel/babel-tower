@@ -16,7 +16,8 @@ i18n.
    - [Advanced feature: reference operator](#advanced-feature-reference-operator)
    - [Post-filters](#post-filters)
    - [Misc](#misc)
-   - ['en'/'fr' core langpack features](#enfr-core-langpack-features)
+   - [Core langpack features](#core-langpack-features)
+     - ['en' core langpack](#core-langpack-features-en-core-langpack)
    - [String-kit's format() interoperability](#string-kits-format-interoperability)
    - [Lab](#lab)
 <a name=""></a>
@@ -43,8 +44,10 @@ i18n.
 # Post-filters
 <a name="misc"></a>
 # Misc
-<a name="enfr-core-langpack-features"></a>
-# 'en'/'fr' core langpack features
+<a name="core-langpack-features"></a>
+# Core langpack features
+<a name="core-langpack-features-en-core-langpack"></a>
+## 'en' core langpack
 <a name="string-kits-format-interoperability"></a>
 # String-kit's format() interoperability
 <a name="lab"></a>
