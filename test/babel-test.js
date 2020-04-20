@@ -940,7 +940,7 @@ describe( "Core langpack features" , () => {
 			var babel = new Babel() ;
 			var babelEn = babel.use( 'en' ) ;
 
-			babel.extend( require( '../lib/en.js' ) ) ;
+			//babel.extend( require( '../lib/en.js' ) ) ;
 
 			expect( babelEn.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "A cat jumps on the table!" ) ;
 			expect( babelEn.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "animal[a:i]" ) ) ).to.be( "An animal jumps on the table!" ) ;
@@ -976,8 +976,8 @@ describe( "Core langpack features" , () => {
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
 
-		babel.extend( require( '../lib/en.js' ) ) ;
-		babel.extend( require( '../lib/fr.js' ) ) ;
+		//babel.extend( require( '../lib/en.js' ) ) ;
+		//babel.extend( require( '../lib/fr.js' ) ) ;
 		
 		babel.extend( {
 			fr: {
