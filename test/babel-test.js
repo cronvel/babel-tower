@@ -1025,6 +1025,21 @@ describe( "Core langpack features" , () => {
 			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:i/n:++]" ) ) ).to.be( "Cats are on the table!" ) ;
 			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:d/n:++]" ) ) ).to.be( "The cats are on the table!" ) ;
 		} ) ;
+
+		it( "zzz English possessives" , () => {
+			var babel = new Babel( 'en' ) ;
+
+			babel.extendLocale( 'en' , {
+				atoms: {
+					cat: Atom.parse( "cat[l:n/n?cat|cats]" ) ,
+					be: Atom.parse( "be[l:v/np?(am|are|is)|(are|are|are)]" )
+				}
+			} ) ;
+			
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[+p:1]" ) ) ).to.be( "The cat is on the table!" ) ;
+			return ;
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[+p:1/n:++]" ) ) ).to.be( "The cats are on the table!" ) ;
+		} ) ;
 	} ) ;
 
 	it( "testing few beta features" , () => {
