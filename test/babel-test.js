@@ -105,13 +105,13 @@ describe( "Atom parser and solver" , () => {
 		expect( new Atom( { n: 1 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 2 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 		expect( new Atom( { n: 5 , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-		expect( new Atom( { n: 'many' , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Atom( { n: '++' , ord: ['n'] , alt: [ "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 		
 		expect( new Atom( { n: 0 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "rien" ) ;
 		expect( new Atom( { n: 1 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "cheval" ) ;
 		expect( new Atom( { n: 2 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 		expect( new Atom( { n: 5 , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
-		expect( new Atom( { n: 'many' , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
+		expect( new Atom( { n: '++' , ord: ['n0'] , alt: [ "rien" , "cheval" , "chevaux" ] } ).solve( babel ) ).to.be( "chevaux" ) ;
 		
 		var npg = [
 			[
@@ -403,7 +403,7 @@ describe( "Basic usage without language pack" , () => {
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , 10 ) ).to.be( "This is the truth!" ) ;
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , '1' ) ).to.be( "This is the truth!" ) ;
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , '10' ) ).to.be( "This is the truth!" ) ;
-		expect( babel.solve( "This is $1[b?the truth|a lie]!" , 'many' ) ).to.be( "This is the truth!" ) ;
+		expect( babel.solve( "This is $1[b?the truth|a lie]!" , '++' ) ).to.be( "This is the truth!" ) ;
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , false ) ).to.be( "This is a lie!" ) ;
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , 'false' ) ).to.be( "This is a lie!" ) ;
 		expect( babel.solve( "This is $1[b?the truth|a lie]!" , 0 ) ).to.be( "This is a lie!" ) ;
@@ -439,17 +439,17 @@ describe( "Basic usage without language pack" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "There is an $1[n:1]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There are $1[n:2]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
-		expect( babel.solve( "There are $1[n:many]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
+		expect( babel.solve( "There are $1[n:++]..." , { "n?": [ "horse" , "horses" ] } ) ).to.be( "There are horses..." ) ;
 		
 		var atom = new Atom( { "n?": [ "horse" , "horses" ] } ) ;
 		expect( babel.solve( "There is an $1[n:1]..." , atom ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There are $1[n:2]..." , atom ) ).to.be( "There are horses..." ) ;
-		expect( babel.solve( "There are $1[n:many]..." , atom ) ).to.be( "There are horses..." ) ;
+		expect( babel.solve( "There are $1[n:++]..." , atom ) ).to.be( "There are horses..." ) ;
 		
 		atom = Atom.parse( "[n?horse|horses]" ) ;
 		expect( babel.solve( "There is an $1[n:1]..." , atom ) ).to.be( "There is an horse..." ) ;
 		expect( babel.solve( "There are $1[n:2]..." , atom ) ).to.be( "There are horses..." ) ;
-		expect( babel.solve( "There are $1[n:many]..." , atom ) ).to.be( "There are horses..." ) ;
+		expect( babel.solve( "There are $1[n:++]..." , atom ) ).to.be( "There are horses..." ) ;
 	} ) ;
 	
 	it( "should format things using the 'n0g?' notation" , () => {
@@ -704,7 +704,7 @@ describe( "Language pack and functions" , () => {
 				} ,
 				sentences: {
 					"Give me an $1!" : "Donne-moi $1[g?un|une] $1!" ,
-					"I like $1[n:many]!" : "J'aime les $1[n:many]!"
+					"I like $1[n:++]!" : "J'aime les $1[n:++]!"
 				} ,
 				atoms: {
 					apple: { g:'f', "n?": [ 'pomme' , 'pommes' ] } ,
@@ -716,8 +716,8 @@ describe( "Language pack and functions" , () => {
 		//expect( babel.solve( "Give me an $1!" , "apple" ) ).to.be( "Give me an apple!" ) ;
 		expect( babelFr.solve( "Give me an $1!" , "apple" ) ).to.be( "Donne-moi une pomme!" ) ;
 		
-		expect( babel.solve( "I like $1[n:many]!" , { "n?": [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
-		expect( babelFr.solve( "I like $1[n:many]!" , "horse" ) ).to.be( "J'aime les chevaux!" ) ;
+		expect( babel.solve( "I like $1[n:++]!" , { "n?": [ "horse" , "horses" ] } ) ).to.be( "I like horses!" ) ;
+		expect( babelFr.solve( "I like $1[n:++]!" , "horse" ) ).to.be( "J'aime les chevaux!" ) ;
 	} ) ;
 
 	it( "When a translation key does not exist, it should fallback to the root babel locale (so functions keep working)" , () => {
@@ -810,7 +810,7 @@ describe( "Advanced feature: list and enumeration" , () => {
 		expect( babelFr.solve( sentence , [ "pear" , "banana" , "strawberry" ] ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
 		
 		expect( babelFr.solve( sentence , [ { k:"pear" , n:3 } ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
-		expect( babelFr.solve( sentence , [ { k:"pear" , n:'many' } , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
+		expect( babelFr.solve( sentence , [ { k:"pear" , n:'++' } , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
 	} ) ;
 } ) ;
 
@@ -856,7 +856,7 @@ describe( "Post-filters" , () => {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 				sentences: {
 					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
-					"$1[n:many//uc1]: I like that!": "$1[n:many//uc1]: j'adore ça!"
+					"$1[n:++//uc1]: I like that!": "$1[n:++//uc1]: j'adore ça!"
 				} ,
 				atoms: {
 					apple: { g:'f', "n?": [ 'pomme' , 'pommes' ] } ,
@@ -870,9 +870,9 @@ describe( "Post-filters" , () => {
 		
 		expect( babelFr.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Pomme: j'adore ça!" ) ;
 		expect( babelFr.solve( "$1[//uc1]: I like that!" , "pear" ) ).to.be( "Poire: j'adore ça!" ) ;
-		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "apple" ) ).to.be( "Pommes: j'adore ça!" ) ;
-		expect( babelFr.solve( "$1[n:many//uc1]: I like that!" , "pear" ) ).to.be( "Poires: j'adore ça!" ) ;
-		expect( babelFr.solve( "$1[//uc1]: I like that!" , { k:"apple", n:'many'} ) ).to.be( "Pommes: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[n:++//uc1]: I like that!" , "apple" ) ).to.be( "Pommes: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[n:++//uc1]: I like that!" , "pear" ) ).to.be( "Poires: j'adore ça!" ) ;
+		expect( babelFr.solve( "$1[//uc1]: I like that!" , { k:"apple", n:'++'} ) ).to.be( "Pommes: j'adore ça!" ) ;
 		
 		expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.be( "Apple: I like that!" ) ;
 	} ) ;
@@ -946,9 +946,8 @@ describe( "Core langpack features" , () => {
 	
 	describe( "'en' core langpack" , () => {
 
-		it( "English article" , () => {
+		it( "English articles" , () => {
 			var babel = new Babel( 'en' ) ;
-			//var babelEn = babel.use( 'en' ) ;
 
 			expect( babel.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "A cat jumps on the table!" ) ;
 			expect( babel.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "animal[a:i]" ) ) ).to.be( "An animal jumps on the table!" ) ;
@@ -970,18 +969,55 @@ describe( "Core langpack features" , () => {
 			expect( babel.solve( "$1[+a//uc1] jump on the table!" , Atom.parse( "animals[a:d/n:2]" ) ) ).to.be( "The animals jump on the table!" ) ;
 			expect( babel.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "Misty[a:P/n:2]" ) ) ).to.be( "Misty jumps on the table!" ) ;
 
-			expect( babel.solve( "$1[+a//uc1] jump on the table!" , Atom.parse( "animals[a:i/n:many]" ) ) ).to.be( "Animals jump on the table!" ) ;
-			expect( babel.solve( "$1[+a//uc1] jump on the table!" , Atom.parse( "animals[a:d/n:many]" ) ) ).to.be( "The animals jump on the table!" ) ;
-			expect( babel.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "Misty[a:P/n:many]" ) ) ).to.be( "Misty jumps on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] jump on the table!" , Atom.parse( "animals[a:i/n:++]" ) ) ).to.be( "Animals jump on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] jump on the table!" , Atom.parse( "animals[a:d/n:++]" ) ) ).to.be( "The animals jump on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] jumps on the table!" , Atom.parse( "Misty[a:P/n:++]" ) ) ).to.be( "Misty jumps on the table!" ) ;
 
 			// Override
 			expect( babel.solve( "$1[+a:d//uc1] jumps on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "The cat jumps on the table!" ) ;
+		} ) ;
+
+		it( "English noun flexion tests" , () => {
+			var babel = new Babel( 'en' ) ;
+
+			babel.extendLocale( 'en' , {
+				atoms: {
+					cat: Atom.parse( "cat[n?cat|cats]" ) ,
+					jump: Atom.parse( "jump[np?(jump|jump|jumps)|(jump|jump|jump)]" )
+				}
+			} ) ;
+			
+			expect( babel.solve( "$1[+a//uc1] $[k:jump] on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "A cat jumps on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] $[k:jump] on the table!" , Atom.parse( "cat[a:i/n:++]" ) ) ).to.be( "Cats jump on the table!" ) ;
+			expect( babel.solve( "$1[+a/n:++//uc1] jump on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "Cats jump on the table!" ) ;
+
+			expect( babel.solve( "$1[+a//uc1] $[k:jump] on the table!" , Atom.parse( "cat[a:d]" ) ) ).to.be( "The cat jumps on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] $[k:jump] on the table!" , Atom.parse( "cat[a:d/n:++]" ) ) ).to.be( "The cats jump on the table!" ) ;
+			expect( babel.solve( "$1[+a/n:++//uc1] jump on the table!" , Atom.parse( "cat[a:d]" ) ) ).to.be( "The cats jump on the table!" ) ;
+		} ) ;
+
+		it( "zzz English verbs" , () => {
+			var babel = new Babel( 'en' ) ;
+
+			babel.extendLocale( 'en' , {
+				atoms: {
+					cat: Atom.parse( "cat[n?cat|cats]" ) ,
+					be: Atom.parse( "be[np?(am|are|is)|(are|are|are)]" )
+				}
+			} ) ;
+			
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "[+p/p:1/n:1]" ) ) ).to.be( "I am on the table!" ) ;
+			return ;
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:i]" ) ) ).to.be( "A cat is on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:i/n:++]" ) ) ).to.be( "Cats are on the table!" ) ;
+
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:d]" ) ) ).to.be( "The cat is on the table!" ) ;
+			expect( babel.solve( "$1[+a//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:d/n:++]" ) ) ).to.be( "The cats are on the table!" ) ;
 		} ) ;
 	} ) ;
 
 	it( "testing few beta features" , () => {
 		var babel = new Babel( 'en' ) ;
-		//var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
 
 		babel.extend( {
@@ -1022,7 +1058,7 @@ describe( "Core langpack features" , () => {
 		
 		expect( babelFr.solve( "I want a $1." , "tree" ) ).to.be( "Je veux un arbre." ) ;
 		expect( babelFr.solve( "I want a $1." , "flower" ) ).to.be( "Je veux une fleur." ) ;
-		expect( babelFr.solve( "I want a $1." , { k: "flower" , n: "many" } ) ).to.be( "Je veux des fleurs." ) ;
+		expect( babelFr.solve( "I want a $1." , { k: "flower" , n: "++" } ) ).to.be( "Je veux des fleurs." ) ;
 	} ) ;
 } ) ;
 
