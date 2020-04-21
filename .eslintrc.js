@@ -60,6 +60,7 @@ module.exports = {
 		'indent': [ 'error' , 'tab' , {
 			'SwitchCase': 1 ,
 			'MemberExpression': 1 ,
+			'flatTernaryExpressions': true
 		} ] ,
 		'newline-per-chained-call': [ 'error', {
 			'ignoreChainWithDepth': 2 
