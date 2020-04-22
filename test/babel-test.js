@@ -1031,13 +1031,27 @@ describe( "Core langpack features" , () => {
 
 			babel.extendLocale( 'en' , {
 				atoms: {
-					cat: Atom.parse( "cat[l:n/n?cat|cats]" ) ,
-					be: Atom.parse( "be[l:v/np?(am|are|is)|(are|are|are)]" )
+					cat: Atom.parse( "cat[n?cat|cats]" ) ,
+					barmaid: Atom.parse( "barmaid[n?barmaid|barmaids/g:f]" ) ,
+					be: Atom.parse( "be[np?(am|are|is)|(are|are|are)]" ) ,
+					like: Atom.parse( "like[np?(like|like|likes)|like]" )
 				}
 			} ) ;
 			
-			expect( babel.solve( "$1[+d:p|1|1//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:d]" ) ) ).to.be( "My cat is on the table!" ) ;
-			expect( babel.solve( "$1[+d:p|1|1//uc1] $[k:be] on the table!" , Atom.parse( "cat[+p:1/n:++]" ) ) ).to.be( "My cats are on the table!" ) ;
+			expect( babel.solve( "$1[+]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "[+p:1]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "My cat is on the table!" ) ;
+			expect( babel.solve( "$1[//uc1] $[k:like] when $2[+d:p] $[k:be] on the table!" , Atom.parse( "[+p:1]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "I like when my cat is on the table!" ) ;
+
+			expect( babel.solve( "$1[+]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "[+p:2]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "Your cat is on the table!" ) ;
+			expect( babel.solve( "$1[//uc1] $[k:like] when $2[+d:p] $[k:be] on the table!" , Atom.parse( "[+p:2]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "You like when your cat is on the table!" ) ;
+
+			expect( babel.solve( "$1[+]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "[+p:3/g:f]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "Her cat is on the table!" ) ;
+			expect( babel.solve( "$1[//uc1] $[k:like] when $2[+d:p] $[k:be] on the table!" , Atom.parse( "[+p:3/g:f]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "She likes when her cat is on the table!" ) ;
+
+			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/+a]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid's cat is on the table!" ) ;
+			expect( babel.solve( "$1[+d//uc1] $[k:like] when $1[+/+d/p]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid likes when her cat is on the table!" ) ;
+			expect( babel.solve( "$1[+d//uc1] $[k:like] when $1[+/+d]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid likes when the barmaid's cat is on the table!" ) ;
+
+			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/n:++/+a]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaids' cat is on the table!" ) ;
 		} ) ;
 	} ) ;
 
