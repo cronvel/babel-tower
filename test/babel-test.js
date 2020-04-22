@@ -726,8 +726,8 @@ describe( "Language pack and functions" , () => {
 		var babelFr = babel.use( 'fr' ) ;
 		
 		// When a translation is missing, it should use the base locale
-		expect( babel.solve( "$1[1p//uc1] $1[n?am|are] sad..." , 1 ) ).to.be( "I am sad..." ) ;
-		expect( babelFr.solve( "$1[1p//uc1] $1[n?am|are] sad..." , 1 ) ).to.be( "I am sad..." ) ;
+		expect( babel.solve( "$1[+p:1//uc1] $1[n?am|are] sad..." , 1 ) ).to.be( "I am sad..." ) ;
+		expect( babelFr.solve( "$1[+p:1//uc1] $1[n?am|are] sad..." , 1 ) ).to.be( "I am sad..." ) ;
 	} ) ;
 } ) ;
 
@@ -1047,11 +1047,13 @@ describe( "Core langpack features" , () => {
 			expect( babel.solve( "$1[+]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "[+p:3/g:f]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "Her cat is on the table!" ) ;
 			expect( babel.solve( "$1[//uc1] $[k:like] when $2[+d:p] $[k:be] on the table!" , Atom.parse( "[+p:3/g:f]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "She likes when her cat is on the table!" ) ;
 
-			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/+a]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid's cat is on the table!" ) ;
+			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid's cat is on the table!" ) ;
 			expect( babel.solve( "$1[+d//uc1] $[k:like] when $1[+/+d/p]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid likes when her cat is on the table!" ) ;
 			expect( babel.solve( "$1[+d//uc1] $[k:like] when $1[+/+d]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaid likes when the barmaid's cat is on the table!" ) ;
+			expect( babel.solve( "$1[+p!//uc1] $[k:like] when $1[+/+d/p]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "She likes when her cat is on the table!" ) ;
 
-			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/n:++/+a]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaids' cat is on the table!" ) ;
+			expect( babel.solve( "$1[+/+d]$2[+d:p//uc1] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/n:++]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaids' cat is on the table!" ) ;
+			expect( babel.solve( "$1[+d//uc1] $[k:like] when $1[+/+d/p]$2[+d:p] $[k:be] on the table!" , Atom.parse( "barmaid[a:d/n:++]" ) , Atom.parse( "cat[a:d]" ) ) ).to.be( "The barmaids like when their cat is on the table!" ) ;
 		} ) ;
 	} ) ;
 
@@ -1062,10 +1064,10 @@ describe( "Core langpack features" , () => {
 		babel.extend( {
 			fr: {
 				sentences: {
-					"$1[1p//uc1] $1[n?am|are] happy.": "$1[1p//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
-					"$1[3p//uc1] $1[n?is|are] happy.": "$1[3p//uc1] $1[n?est|sont] content$1[n?|s]." ,
+					"$1[+p:1//uc1] $1[n?am|are] happy.": "$1[+p:1//uc1] $1[n?suis|sommes] content$1[n?|s]." ,
+					"$1[+p:3//uc1] $1[n?is|are] happy.": "$1[+p:3//uc1] $1[n?est|sont] content$1[n?|s]." ,
 					"$1[//uc1], beautiful $1.": "$1[+d/a:d//uc1], $1[gel?(le beau|le bel)|(la belle)]$1." ,
-					"I want a $1.": "Je veux $1[+d:i]."
+					"I want $1[+d:a/a:i].": "Je veux $1[+d:a/a:i]."
 				} ,
 				atoms: {
 					tree: { "n?": [ "arbre" , "arbres" ] , g: 'm' } ,
@@ -1076,15 +1078,15 @@ describe( "Core langpack features" , () => {
 			}
 		} ) ;
 		
-		expect( babel.solve( "$1[1p//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "I am happy." ) ;
-		expect( babel.solve( "$1[1p//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "We are happy." ) ;
-		expect( babel.solve( "$1[3p//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "It is happy." ) ;
-		expect( babel.solve( "$1[3p//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "They are happy." ) ;
+		expect( babel.solve( "$1[+p:1//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "I am happy." ) ;
+		expect( babel.solve( "$1[+p:1//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "We are happy." ) ;
+		expect( babel.solve( "$1[+p:3//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "It is happy." ) ;
+		expect( babel.solve( "$1[+p:3//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "They are happy." ) ;
 		
-		expect( babelFr.solve( "$1[1p//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "Je suis content." ) ;
-		expect( babelFr.solve( "$1[1p//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "Nous sommes contents." ) ;
-		expect( babelFr.solve( "$1[3p//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
-		expect( babelFr.solve( "$1[3p//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
+		expect( babelFr.solve( "$1[+p:1//uc1] $1[n?am|are] happy." , 1 ) ).to.be( "Je suis content." ) ;
+		expect( babelFr.solve( "$1[+p:1//uc1] $1[n?am|are] happy." , 3 ) ).to.be( "Nous sommes contents." ) ;
+		expect( babelFr.solve( "$1[+p:3//uc1] $1[n?is|are] happy." , 1 ) ).to.be( "Il est content." ) ;
+		expect( babelFr.solve( "$1[+p:3//uc1] $1[n?is|are] happy." , 3 ) ).to.be( "Ils sont contents." ) ;
 		
 		expect( babel.solve( "$1[//uc1], beautiful $1." , "tree" ) ).to.be( "Tree, beautiful tree." ) ;
 		
@@ -1093,11 +1095,11 @@ describe( "Core langpack features" , () => {
 		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "flower" ) ).to.be( "La fleur, la belle fleur." ) ;
 		expect( babelFr.solve( "$1[//uc1], beautiful $1." , "bee" ) ).to.be( "L'abeille, la belle abeille." ) ;
 		
-		expect( babel.solve( "I want a $1." , "tree" ) ).to.be( "I want a tree." ) ;
+		expect( babel.solve( "I want $1[+d:a/a:i]." , "tree" ) ).to.be( "I want a tree." ) ;
 		
-		expect( babelFr.solve( "I want a $1." , "tree" ) ).to.be( "Je veux un arbre." ) ;
-		expect( babelFr.solve( "I want a $1." , "flower" ) ).to.be( "Je veux une fleur." ) ;
-		expect( babelFr.solve( "I want a $1." , { k: "flower" , n: "++" } ) ).to.be( "Je veux des fleurs." ) ;
+		expect( babelFr.solve( "I want $1[+d:a/a:i]." , "tree" ) ).to.be( "Je veux un arbre." ) ;
+		expect( babelFr.solve( "I want $1[+d:a/a:i]." , "flower" ) ).to.be( "Je veux une fleur." ) ;
+		expect( babelFr.solve( "I want $1[+d:a/a:i]." , { k: "flower" , n: "++" } ) ).to.be( "Je veux des fleurs." ) ;
 	} ) ;
 } ) ;
 

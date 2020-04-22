@@ -44,24 +44,6 @@ function deb( v ) {
 
 describe( "Lab" , () => {
 
-	it( "using reference operator as verb" , () => {
-		var babel = new Babel() ;
-
-		var ctx = {
-			verbe: {
-				"être": Atom.parse( "être[p?suis|es|est]" )
-			} ,
-			sujet: {
-				moi: Atom.parse( "[p:1/s:je]" ) ,
-				bob: Atom.parse( "[s:Bob]" )
-			}
-		} ;
-
-		expect( babel.solve( "${sujet.moi//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Je suis content!" ) ;
-		expect( babel.solve( "${sujet.bob//uc1} $[$:verbe.être] content!" , ctx ) ).to.be( "Bob est content!" ) ;
-		expect( babel.solve( "Tu ${sujet.bob}[$:verbe.être/p:2] content!" , ctx ) ).to.be( "Tu es content!" ) ;
-	} ) ;
-	
 	it( "using a function as verb" , () => {
 		var babel = new Babel() ;
 		
