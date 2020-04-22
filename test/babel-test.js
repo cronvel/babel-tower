@@ -816,29 +816,28 @@ describe( "Advanced feature: list and enumeration" , () => {
 
 
 
-describe( "Advanced feature: reference operator" , () => {
-	
+describe( "Advanced feature: composition syntax" , () => {
 	var babel = new Babel() ;
 	
-	it( "using reference operator that point to an atom should extend the current atom/part" , () => {
+	it( "using composition of two atom should extend the current atom/part" , () => {
 		var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
-		expect( babel.solve( "$1[$2]" , 3 , e ) ).to.be( "3m" ) ;
+		expect( babel.solve( "$1[+]$2[x]" , 3 , e ) ).to.be( "3m" ) ;
 		
-		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
-		expect( babel.solve( "${length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
-		expect( babel.solve( "$1{length}[$:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
-		expect( babel.solve( "$1{length}[$1:lengthUnit]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "${length}[+]${lengthUnit}[x]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "${length}[+]$1{lengthUnit}[x]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "$1{length}[+]${lengthUnit}[x]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
+		expect( babel.solve( "$1{length}[+]$1{lengthUnit}[x]" , { length: 3 , lengthUnit: e } ) ).to.be( "3m" ) ;
 		
-		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+		expect( babel.solve( "${length}[+]${lengthUnit}[x]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
 	} ) ;
 	
-	it( "using reference operator stacked with other operators" , () => {
+	it( "using composition stacked with other operators" , () => {
 		var e = Atom.parse( "[uv:1000|1/uf:$km|$m/um:N+]" ) ;
 		
-		expect( babel.solve( "${length}[$:lengthUnit]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
-		expect( babel.solve( "${length}[$:lengthUnit/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
-		expect( babel.solve( "${length}[$:lengthUnit/uf:$ km|$ m/uenum:0|$|, $| and $]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
+		expect( babel.solve( "${length}[+]${lengthUnit}[x]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3km 21m" ) ;
+		expect( babel.solve( "${length}[+]${lengthUnit}[x/um:R]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3.021km" ) ;
+		expect( babel.solve( "${length}[+]${lengthUnit}[x/uf:$ km|$ m/uenum:0|$|, $| and $]" , { length: 3021 , lengthUnit: e } ) ).to.be( "3 km and 21 m" ) ;
 	} ) ;
 } ) ;
 
@@ -1026,7 +1025,7 @@ describe( "Core langpack features" , () => {
 			expect( babel.solve( "$1[+d//uc1] $[k:be] on the table!" , Atom.parse( "cat[a:d/n:++]" ) ) ).to.be( "The cats are on the table!" ) ;
 		} ) ;
 
-		it( "zzz English possessives" , () => {
+		it( "English possessives" , () => {
 			var babel = new Babel( 'en' ) ;
 
 			babel.extendLocale( 'en' , {
