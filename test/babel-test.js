@@ -624,6 +624,29 @@ describe( "Basic usage with language pack" , () => {
 		expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 2 ) ).to.be( "Donne-moi 2 pommes!" ) ;
 		expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 pommes!" ) ;
 	} ) ;
+
+	it( "zzz using locale source" , () => {
+		var babel = new Babel() ;
+		var babelEn = babel.use( 'en' ) ;
+		var babelFr = babel.use( 'fr' ) ;
+		
+		// Load a pseudo DB
+		babel.extend( {
+			fr: {
+				sentences: {
+					"Give me $1 apple$1[n?|s]!" : "Donne-moi $1 pomme$1[n?|s]!"
+				} ,
+				atoms: {
+					apple: Atom.parse( "[n?pomme|pommes]" )
+				}
+			}
+		} ) ;
+		
+		expect( babelEn.solve( "Give me $1[+d:a]!" , Atom.parse( "apple[a:i]" ) ) ).to.be( "Give me an apple!" ) ;
+		return ;
+		expect( new Sentence( "Give me $1 apple$1[n?|s]!" , babel , 'en' ).solve( 0 ) ).to.be( "Give me 0 apple!" ) ;
+		expect( new Sentence( "Give me $1 apple$1[n?|s]!" , babel , 'en' ).solve( 0 ) ).to.be( "Give me 0 apple!" ) ;
+	} ) ;
 } ) ;
 
 
