@@ -625,27 +625,44 @@ describe( "Basic usage with language pack" , () => {
 		expect( babelFr.solve( "Give me $1 apple$1[n?|s]!" , 3 ) ).to.be( "Donne-moi 3 pommes!" ) ;
 	} ) ;
 
-	it( "zzz using locale source" , () => {
+	it( "using locale source" , () => {
 		var babel = new Babel() ;
 		var babelEn = babel.use( 'en' ) ;
 		var babelFr = babel.use( 'fr' ) ;
 		
 		// Load a pseudo DB
 		babel.extend( {
-			fr: {
+			en: {
 				sentences: {
-					"Give me $1 apple$1[n?|s]!" : "Donne-moi $1 pomme$1[n?|s]!"
+					"Mon nom est $1." : "My name is $1." ,
+					"Mon nom est $1[k:Jean]." : "My name is $1[k:Jean]." ,
+					"Mon nom est $1[k:Jean/l:en]." : "My name is $1[k:Jean/l:en]."
 				} ,
 				atoms: {
-					apple: Atom.parse( "[n?pomme|pommes]" )
+					Jean: Atom.parse( "John[a:P/g:m]" )
+				}
+			} ,
+			fr: {
+				sentences: {
+					"Give me $1[+d:a/a:i]!" : "Donne-moi $1[+d:a]!"
+				} ,
+				atoms: {
+					apple: Atom.parse( "[g:f/n?pomme|pommes]" )
 				}
 			}
 		} ) ;
 		
-		expect( babelEn.solve( "Give me $1[+d:a]!" , Atom.parse( "apple[a:i]" ) ) ).to.be( "Give me an apple!" ) ;
-		return ;
-		expect( new Sentence( "Give me $1 apple$1[n?|s]!" , babel , 'en' ).solve( 0 ) ).to.be( "Give me 0 apple!" ) ;
-		expect( new Sentence( "Give me $1 apple$1[n?|s]!" , babel , 'en' ).solve( 0 ) ).to.be( "Give me 0 apple!" ) ;
+		expect( new Sentence( "Give me $1[+d:a/a:i]!" , babel , 'en' ).solve( Atom.parse( "apple[a:i]" ) ) ).to.be( "Give me apple!" ) ;
+		expect( new Sentence( "Give me $1[+d:a/a:i]!" , babelEn , 'en' ).solve( Atom.parse( "apple[a:i]" ) ) ).to.be( "Give me an apple!" ) ;
+		expect( new Sentence( "Give me $1[+d:a/a:i]!" , babelFr , 'en' ).solve( Atom.parse( "apple[a:i]" ) ) ).to.be( "Donne-moi une pomme!" ) ;
+
+		expect( new Sentence( "Mon nom est $1." , babel , 'fr' ).solve( Atom.parse( "Jean[a:P/g:m]" ) ) ).to.be( "Mon nom est Jean." ) ;
+		expect( new Sentence( "Mon nom est $1." , babelEn , 'fr' ).solve( Atom.parse( "Jean[a:P/g:m]" ) ) ).to.be( "My name is John." ) ;
+		expect( new Sentence( "Mon nom est $1." , babelFr , 'fr' ).solve( Atom.parse( "Jean[a:P/g:m]" ) ) ).to.be( "Mon nom est Jean." ) ;
+
+		expect( new Sentence( "Mon nom est $1." , babelEn , 'fr' ).solve( Atom.parse( "Jean[a:P/g:m/l:en]" ) ) ).to.be( "My name is Jean." ) ;
+		expect( new Sentence( "Mon nom est $1[k:Jean]." , babelEn , 'fr' ).solve() ).to.be( "My name is John." ) ;
+		expect( new Sentence( "Mon nom est $1[k:Jean/l:en]." , babelEn , 'fr' ).solve() ).to.be( "My name is Jean." ) ;
 	} ) ;
 } ) ;
 

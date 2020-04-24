@@ -13,7 +13,7 @@ i18n.
    - [Basic usage with language pack](#basic-usage-with-language-pack)
    - [Language pack and functions](#language-pack-and-functions)
    - [Advanced feature: list and enumeration](#advanced-feature-list-and-enumeration)
-   - [Advanced feature: reference operator](#advanced-feature-reference-operator)
+   - [Advanced feature: composition syntax](#advanced-feature-composition-syntax)
    - [Post-filters](#post-filters)
    - [Misc](#misc)
    - [Core langpack features](#core-langpack-features)
@@ -38,8 +38,8 @@ i18n.
 # Language pack and functions
 <a name="advanced-feature-list-and-enumeration"></a>
 # Advanced feature: list and enumeration
-<a name="advanced-feature-reference-operator"></a>
-# Advanced feature: reference operator
+<a name="advanced-feature-composition-syntax"></a>
+# Advanced feature: composition syntax
 <a name="post-filters"></a>
 # Post-filters
 <a name="misc"></a>
