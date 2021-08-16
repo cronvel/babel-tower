@@ -883,6 +883,17 @@ describe( "Advanced feature: composition syntax" , () => {
 
 
 
+describe( "Pre-filters" , () => {
+
+	it( "zzz should apply pre-filters" , () => {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "Give me $1[//f:.2?] dollars!" , 2 ) ).to.be( "Give me 2.00 dollars!" ) ;
+	} ) ;
+} ) ;
+
+
+
 describe( "Post-filters" , () => {
 	
 	it( "should apply post-filters 'uc1' (upper-case first letter)" , () => {
@@ -894,7 +905,7 @@ describe( "Post-filters" , () => {
 			fr: {
 				gIndex: { m: 0 , f: 1 , n: 2 , h: 2 } ,
 				sentences: {
-					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!",
+					"$1[//uc1]: I like that!": "$1[//uc1]: j'adore ça!" ,
 					"$1[n:++//uc1]: I like that!": "$1[n:++//uc1]: j'adore ça!"
 				} ,
 				atoms: {
@@ -916,7 +927,7 @@ describe( "Post-filters" , () => {
 		expect( babel.solve( "${fruit//uc1}: I like that!" , { fruit: "apple" } ) ).to.be( "Apple: I like that!" ) ;
 	} ) ;
 	
-	it( "should apply post-filters various filters combination" , () => {
+	it( "should apply various filters combination" , () => {
 		var babel = new Babel() ;
 		
 		expect( babel.solve( "$1[//uc1]: I like that!" , "apple" ) ).to.be( "Apple: I like that!" ) ;
