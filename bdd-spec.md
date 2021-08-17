@@ -8,6 +8,7 @@
    - [Language pack and functions](#language-pack-and-functions)
    - [Advanced feature: list and enumeration](#advanced-feature-list-and-enumeration)
    - [Advanced feature: composition syntax](#advanced-feature-composition-syntax)
+   - [Pre-filters](#pre-filters)
    - [Post-filters](#post-filters)
    - [Misc](#misc)
    - [Core langpack features](#core-langpack-features)
@@ -34,6 +35,8 @@
 # Advanced feature: list and enumeration
 <a name="advanced-feature-composition-syntax"></a>
 # Advanced feature: composition syntax
+<a name="pre-filters"></a>
+# Pre-filters
 <a name="post-filters"></a>
 # Post-filters
 <a name="misc"></a>

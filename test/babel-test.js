@@ -885,10 +885,39 @@ describe( "Advanced feature: composition syntax" , () => {
 
 describe( "Pre-filters" , () => {
 
-	it( "zzz should apply pre-filters" , () => {
+	it( "should apply pre-filters coming from tvar or atom syntax" , () => {
 		var babel = new Babel() ;
 		
-		expect( babel.solve( "Give me $1[//f:.2?] dollars!" , 2 ) ).to.be( "Give me 2.00 dollars!" ) ;
+		expect( babel.solve( "Give me ${money//f:.2!} dollars!" , {money:2} ) ).to.be( "Give me 2.00 dollars!" ) ;
+		expect( babel.solve( "Give me ${money}[//f:.2!] dollars!" , {money:2} ) ).to.be( "Give me 2.00 dollars!" ) ;
+		expect( babel.solve( "Give me $1[//f:.2!] dollars!" , 2 ) ).to.be( "Give me 2.00 dollars!" ) ;
+	} ) ;
+
+	it( "should apply String-Kit format()'s mode pre-filters" , () => {
+		var babel = new Babel() ;
+		
+		expect( babel.solve( "Give me ${money//f:.2!} dollars!" , {money:2} ) ).to.be( "Give me 2.00 dollars!" ) ;
+		expect( babel.solve( "Give me ${money}[//f:.2!] dollars!" , {money:2} ) ).to.be( "Give me 2.00 dollars!" ) ;
+		expect( babel.solve( "Give me $1[//f:.2!] dollars!" , 2 ) ).to.be( "Give me 2.00 dollars!" ) ;
+
+		expect( babel.solve( "I walked $1[//k]m!" , 2 ) ).to.be( "I walked 2m!" ) ;
+		expect( babel.solve( "I walked $1[//k]m!" , 2000 ) ).to.be( "I walked 2km!" ) ;
+		expect( babel.solve( "I walked $1[//k]m!" , 2500 ) ).to.be( "I walked 2.5km!" ) ;
+
+		expect( babel.solve( "Value: $1[//x]" , 123 ) ).to.be( "Value: 7b" ) ;
+		expect( babel.solve( "Value: $1[//x]" , 12 ) ).to.be( "Value: 0c" ) ;
+		expect( babel.solve( "Value: $1[//h]" , 12 ) ).to.be( "Value: c" ) ;
+		expect( babel.solve( "Value: $1[//b]" , 123 ) ).to.be( "Value: 1111011" ) ;
+		expect( babel.solve( "Value: $1[//o]" , 123 ) ).to.be( "Value: 173" ) ;
+		expect( babel.solve( "Value: $1[//P]" , 0.123 ) ).to.be( "Value: 12%" ) ;
+		expect( babel.solve( "Value: $1[//P]" , 1.123 ) ).to.be( "Value: 112%" ) ;
+		expect( babel.solve( "Value: $1[//p]" , 1.123 ) ).to.be( "Value: +12%" ) ;
+		expect( babel.solve( "Value: $1[//p]" , 0.84 ) ).to.be( "Value: -16%" ) ;
+
+		expect( babel.solve( "Value: $1[//K]" , 123456 ) ).to.be( "Value: 1.23456 × 10⁵" ) ;
+		expect( babel.solve( "Value: $1[//K:3]" , 123456 ) ).to.be( "Value: 1.23 × 10⁵" ) ;
+		expect( babel.solve( "Value: $1[//e]" , 123456 ) ).to.be( "Value: 1.23456e+5" ) ;
+		expect( babel.solve( "Value: $1[//e:3]" , 123456 ) ).to.be( "Value: 1.23e+5" ) ;
 	} ) ;
 } ) ;
 
@@ -944,13 +973,13 @@ describe( "Post-filters" , () => {
 	it( "should apply english post-filters" , () => {
 		var babel = new Babel() ;
 		
-		expect( babel.solve( "You take $1[//en:the]." , "apple" ) ).to.be( "You take the apple." ) ;
-		expect( babel.solve( "You take $1[//en:the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
-		expect( babel.solve( "You take $1[//en:a]." , "apple" ) ).to.be( "You take an apple." ) ;
-		expect( babel.solve( "You take $1[//en:a]." , "banana" ) ).to.be( "You take a banana." ) ;
-		expect( babel.solve( "You take $1[//en:a]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
+		expect( babel.solve( "You take $1[//en;the]." , "apple" ) ).to.be( "You take the apple." ) ;
+		expect( babel.solve( "You take $1[//en;the]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
+		expect( babel.solve( "You take $1[//en;a]." , "apple" ) ).to.be( "You take an apple." ) ;
+		expect( babel.solve( "You take $1[//en;a]." , "banana" ) ).to.be( "You take a banana." ) ;
+		expect( babel.solve( "You take $1[//en;a]." , "Excalibur" ) ).to.be( "You take Excalibur." ) ;
 		
-		expect( babel.solve( "You take ${noun//en:the}." , { noun: "apple" } ) ).to.be( "You take the apple." ) ;
+		expect( babel.solve( "You take ${noun//en;the}." , { noun: "apple" } ) ).to.be( "You take the apple." ) ;
 	} ) ;
 	
 	it( "should apply path post-filters" , () => {
