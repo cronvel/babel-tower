@@ -1,6 +1,6 @@
 {
   "name": "babel-tower",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "i18n",
   "main": "lib/Babel.js",
   "engines": {
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "kung-fig-ref": "^0.45.0",
-    "string-kit": "^0.12.7"
+    "string-kit": "^0.12.8"
   },
   "devDependencies": {
     "number-to-words": "^1.2.4"
