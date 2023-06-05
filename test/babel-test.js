@@ -792,6 +792,11 @@ describe( "Advanced feature: list and enumeration" , () => {
 		expect( babel.solve( "I want $1." , "apple" ) ).to.be( "I want apple." ) ;
 	} ) ;
 	
+	it( "when an iterable is given instead of an array, it should be equivalent to an array" , () => {
+		var babel = new Babel() ;
+		expect( babel.solve( "I want $1[enum]." , new Set( [ "apple" , "pear" , "orange" ] ) ) ).to.be( "I want apple pear orange." ) ;
+	} ) ;
+	
 	it( "enumeration with variable length" , () => {
 		var babel = new Babel() ;
 		expect( babel.solve( "I want $1[enum:nothing|$|, $| and $]." , [] ) ).to.be( "I want nothing." ) ;
