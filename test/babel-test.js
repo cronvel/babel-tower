@@ -856,6 +856,9 @@ describe( "Advanced feature: list and enumeration" , () => {
 		
 		expect( babelFr.solve( sentence , [ { k:"pear" , n:3 } ] ) ).to.be( "Je veux plusieurs choses: des poires." ) ;
 		expect( babelFr.solve( sentence , [ { k:"pear" , n:'++' } , "banana" ] ) ).to.be( "Je veux plusieurs choses: des poires et une banane." ) ;
+
+		// Check iterable
+		expect( babelFr.solve( sentence , new Set( [ "pear" , "banana" , "strawberry" ] ) ) ).to.be( "Je veux plusieurs choses: une poire, une banane et une fraise." ) ;
 	} ) ;
 } ) ;
 
