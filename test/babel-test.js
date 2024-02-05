@@ -1209,3 +1209,24 @@ describe( "String-kit's format() interoperability" , () => {
 	} ) ;
 } ) ;
 
+
+
+describe( "Book Source's interoperability" , () => {
+	
+	it( "the parser should not interpret Book Source's syntax" , () => {
+		var babel , regex ;
+		
+		babel = new Babel() ;
+		expect( babel.solve( "This is [spooky]<orange>..." , 'pumpkin' ) ).to.be( "This is [spooky]<orange>..." ) ;
+		expect( babel.solve( "This is [spooky][Brrr... It gives me the chill!]<orange>..." , 'pumpkin' ) ).to.be( "This is [spooky][Brrr... It gives me the chill!]<orange>..." ) ;
+		expect( babel.solve( "This is a [$]<orange>..." , 'pumpkin' ) ).to.be( "This is a [pumpkin]<orange>..." ) ;
+		expect( babel.solve( "This is a [$1]<orange>..." , 'pumpkin' ) ).to.be( "This is a [pumpkin]<orange>..." ) ;
+		expect( babel.solve( "This is a [${edible}]<orange>..." , { edible: 'pumpkin' } ) ).to.be( "This is a [pumpkin]<orange>..." ) ;
+		expect( babel.solve( "This is a [${edible}[//uc1]]<orange>..." , { edible: 'pumpkin' } ) ).to.be( "This is a [Pumpkin]<orange>..." ) ;
+		expect( babel.solve( "This is a [${edible}][tooltip]<orange>..." , { edible: 'pumpkin' } ) ).to.be( "This is a [pumpkin][tooltip]<orange>..." ) ;
+		expect( babel.solve( "This is a [${edible}][[tooltip]]<orange>..." , { edible: 'pumpkin' } ) ).to.be( "This is a [pumpkin][[tooltip]]<orange>..." ) ;
+		expect( babel.solve( "Give me [${count}]<cyan> [pumpkin${count}[n?|s]]<orange>!" , { count: 1 } ) ).to.be( "Give me [1]<cyan> [pumpkin]<orange>!" ) ;
+		expect( babel.solve( "Give me [${count}]<cyan> [pumpkin${count}[n?|s]]<orange>!" , { count: 3 } ) ).to.be( "Give me [3]<cyan> [pumpkins]<orange>!" ) ;
+	} ) ;
+} ) ;
+
